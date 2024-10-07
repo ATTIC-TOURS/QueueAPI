@@ -61,4 +61,3 @@ class Queue(models.Model):
     is_called = models.BooleanField(default=False, blank=False, null=False)
     created_at = models.DateTimeField(auto_now=True, blank=False, null=False)
     updated_at = models.DateTimeField(blank=True)
-    
