@@ -4,6 +4,8 @@ from queues import views
 
 
 urlpatterns = [
+    path("branches/", views.branch_list),
+    path("branch_login/<int:pk>/", views.branch_login),
     path("services/", views.service_list),
     path("services/<int:pk>/", views.service_detail)
 ]
