@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from queues.views import service_api, branch_api, queue_api, window_api, status_api
+from queues.views import service_api, branch_api, queue_api, window_api, status_api, setup_api
 
 
 urlpatterns = [
@@ -14,6 +14,7 @@ urlpatterns = [
     path("queue_call/", queue_api.queue_call),
     path("viewable_status/", status_api.viewable_status),
     path("queue_update/", queue_api.queue_update),
+    path("mobile/", setup_api.mobile),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

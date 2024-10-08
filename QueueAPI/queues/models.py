@@ -40,16 +40,19 @@ class Printer(models.Model):
     mac_address = models.CharField(max_length=100, blank=False, null=False)
     is_active = models.BooleanField(default=True, blank=False, null=False)
     error_msg = models.CharField(max_length=200, blank=True)
+    
+    def __str__(self):
+        return f"{self.id}-{self.is_active}"
 
 
 class Mobile(models.Model):
     mac_address = models.CharField(max_length=100, blank=False, null=False)
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
     is_active = models.BooleanField(default=True, blank=False, null=False)
-    printer_id = models.ForeignKey(Printer, on_delete=models.CASCADE, blank=False, null=False)
+    printer_id = models.ForeignKey(Printer, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
-        return self.branch_id
+        return f"{self.branch_id}-{self.mac_address}"
     
 
 class Queue(models.Model):
