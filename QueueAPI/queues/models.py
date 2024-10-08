@@ -65,7 +65,7 @@ class Queue(models.Model):
     queue_no =  models.PositiveIntegerField(blank=False, null=False)
     status_id = models.ForeignKey(Status, on_delete=models.CASCADE, blank=False, null=False)
     is_called = models.BooleanField(default=False, blank=False, null=False)
-    created_at = models.DateTimeField(default=timezone.now(), blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now, blank=False, null=False)
     updated_at = models.DateTimeField(blank=True, null=True)
 
 

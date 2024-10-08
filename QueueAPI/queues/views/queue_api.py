@@ -7,12 +7,12 @@ from django.utils import timezone
     
 
 @api_view(["GET"])
-def current_queue_stats(request, pk, format=None):
+def current_queue_stats(request, branch_id, format=None):
     statuses = Status.objects.all()
     statuses = {status.name: 0 for status in statuses}
     if request.method == "GET":
         queues = Queue.objects.filter(
-            branch_id=pk,
+            branch_id=branch_id,
             created_at__gte=timezone.now().date()
         )
         for queue in queues:
@@ -23,10 +23,10 @@ def current_queue_stats(request, pk, format=None):
 
 
 @api_view(["GET"])
-def current_queues(request, pk, format=None):
+def current_queues(request, branch_id, format=None):
     if request.method == "GET":
         queues = Queue.objects.filter(
-            branch_id=pk,
+            branch_id=branch_id,
             created_at__gte=timezone.now().date()
         )
         serializer = QueueSerializer(queues, many=True)
@@ -35,6 +35,7 @@ def current_queues(request, pk, format=None):
 
 @api_view(["PATCH"])
 def queue_call(request, format=None):
+    # request.data -> queue_id, window_id
     try:
         queue = Queue.objects.get(pk=request.data["queue_id"])
     except Queue.DoesNotExist:
@@ -43,7 +44,8 @@ def queue_call(request, format=None):
         data = {
             "window_id": request.data["window_id"],
             "status_id": Status.objects.filter(name="in-progress").values().first()["id"],
-            "is_called": True
+            "is_called": True,
+            "updated_at": timezone.now()
         }
         serializer = QueueSerializer(queue, data=data, partial=True)
         if serializer.is_valid():
@@ -54,12 +56,16 @@ def queue_call(request, format=None):
 
 @api_view(["PATCH"])
 def queue_update(request, format=None):
+    # request.data -> queue_id, status_id
     try:
         queue = Queue.objects.get(pk=request.data["queue_id"])
     except Queue.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == "PATCH":
-        serializer = QueueSerializer(queue, data=request.data, partial=True)
+        updated_data = {
+            "status_id": request.data["status_id"]
+        }
+        serializer = QueueSerializer(queue, data=updated_data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -122,6 +128,21 @@ def waiting_queues(request, branch_id, format=None):
         serializer = QueueSerializer(queues, many=True)
         return Response(serializer.data)
 
+
+# ----------------
+# web test case
+# ----------------
+# GET CURRENT QUEUE STATS
+# http GET http://127.0.0.1:8000/current_queue_stats/1/
+
+# GET CURRENT QUEUES
+# http GET http://127.0.0.1:8000/current_queues/1/
+
+# CALL APPLICANT
+# http POST http://127.0.0.1:8000/queue_call/ queue_id=1 window_id=1
+
+# UPDATE A QUEUE
+# http PATCH http://127.0.0.1:8000/queue_update/ queue_id=1 status_id=1
 
 # ----------------
 # mobile test case

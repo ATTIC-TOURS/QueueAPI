@@ -1,0 +1,63 @@
+NORMAL SCENARIO
+
+Data that DB has to have in the first place!!
+- Branch
+- Service
+- Window
+- Status
+- MarkQueue
+
+------
+Mobile
+------
+1 setup
+http GET http://127.0.0.1:8000/branches/
+(parameter->branch_id)
+http POST http://127.0.0.1:8000/branch_login/1/ password=1234 
+http POST http://127.0.0.1:8000/mobile/ mac_address=234.324.324.234.23 branch_id=1
+
+2 services
+http GET http://127.0.0.1:8000/services/
+
+3 view waiting status
+(parameter->branch_id, service_id)
+http GET http://127.0.0.1:8000/no_queue_waiting_status/1/1/ 
+
+4 apply to the service (issue queue no)
+(parameter->branch_id)
+http POST http://127.0.0.1:8000/printer/1/ mac_address=123.123.123.123 
+(parameter->branch_id, service_id)
+http POST http://127.0.0.1:8000/queues/1/1/ queue_no=1 
+
+---
+Web
+---
+1 login (web)
+http GET http://127.0.0.1:8000/branches/
+(parameter->branch_id)
+http POST http://127.0.0.1:8000/branch_login/1/ password=1234
+
+2 current queues (web)
+(parameter->branch_id)
+http GET http://127.0.0.1:8000/current_queue_stats/1/
+(parameter->branch_id)
+http GET http://127.0.0.1:8000/current_queues/1/
+
+3 call applicant (web)
+http GET http://127.0.0.1:8000/windows/
+http PATCH http://127.0.0.1:8000/queue_call/ queue_id=1 window_id=1
+
+4 done taking care of the applicant (web)
+http GET http://127.0.0.1:8000/viewable_status/
+http PATCH http://127.0.0.1:8000/queue_update/ queue_id=1 status_id=1
+
+---
+TV
+---
+1 shows waiting, in-progress status and mark queues
+(parameter->branch_id)
+http GET http://127.0.0.1:8000/waiting_queues/1/
+(parameter->branch_id)
+http GET http://127.0.0.1:8000/in_progress_queues/1/
+(parameter->branch_id)
+http GET http://127.0.0.1:8000/markqueues/1/
