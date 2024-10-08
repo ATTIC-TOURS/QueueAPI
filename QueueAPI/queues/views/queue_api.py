@@ -64,3 +64,47 @@ def queue_update(request, format=None):
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["POST"])
+def queue(request, branch_id, service_id, format=None):
+    # request.data -> branch_id, service_id, queue_no
+    if request.method == "POST":
+        new_queue_data = {
+            "branch_id": branch_id,
+            "service_id": service_id,
+            # "window_id": None,
+            "queue_no": request.data["queue_no"],
+            "status_id": Status.objects.get(name="waiting").id,
+            "is_called": False,
+        }
+        serializer = QueueSerializer(data=new_queue_data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["GET"])
+def no_queue_waiting_status(request, branch_id, service_id, format=None):
+    if request.method == "GET":
+        queues = Queue.objects.filter(
+            branch_id=branch_id,
+            service_id=service_id,
+            status_id=Status.objects.get(name="waiting").id,
+            created_at__gte=timezone.now().date()
+        )
+        print(queues)
+        no_waiting_status = len(queues)
+        return Response(no_waiting_status)
+
+
+# mobile test case
+# CREATE A NEW QUEUE
+# http POST http://127.0.0.1:8000/queues/1/1/ queue_no=4
+
+# GET THE NO OF WAITING STATUS
+# http GET http://127.0.0.1:8000/no_queue_waiting_status/1/1/
+
+# GET THE SERVICES
+# http GET http://127.0.0.1:8000/services/

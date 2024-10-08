@@ -58,9 +58,9 @@ class Mobile(models.Model):
 class Queue(models.Model):
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
     service_id = models.ForeignKey(Service, on_delete=models.CASCADE, blank=False, null=False)
-    window_id = models.ForeignKey(Window, on_delete=models.CASCADE, blank=False, null=False)
+    window_id = models.ForeignKey(Window, on_delete=models.CASCADE, blank=True, null=True)
     queue_no =  models.PositiveIntegerField(blank=False, null=False)
     status_id = models.ForeignKey(Status, on_delete=models.CASCADE, blank=False, null=False)
     is_called = models.BooleanField(default=False, blank=False, null=False)
     created_at = models.DateTimeField(auto_now=True, blank=False, null=False)
-    updated_at = models.DateTimeField(blank=True)
+    updated_at = models.DateTimeField(blank=True, null=True)

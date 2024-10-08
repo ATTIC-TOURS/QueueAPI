@@ -15,6 +15,8 @@ urlpatterns = [
     path("viewable_status/", status_api.viewable_status),
     path("queue_update/", queue_api.queue_update),
     path("mobile/", setup_api.mobile),
+    path("queues/<int:branch_id>/<int:service_id>/", queue_api.queue),
+    path("no_queue_waiting_status/<int:branch_id>/<int:service_id>/", queue_api.no_queue_waiting_status),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

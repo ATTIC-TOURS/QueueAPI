@@ -58,12 +58,12 @@ class QueueSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     branch_id = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
     service_id = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), required=True)
-    window_id = serializers.PrimaryKeyRelatedField(queryset=Window.objects.all(), required=True)
-    queue_no = serializers.IntegerField(read_only=True)
+    window_id = serializers.PrimaryKeyRelatedField(queryset=Window.objects.all(), required=False)
+    queue_no = serializers.IntegerField()
     status_id = serializers.PrimaryKeyRelatedField(queryset=Status.objects.all(), required=True)
     is_called = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField()
+    updated_at = serializers.DateTimeField(required=False)
     
     def create(self, validated_data):
         return Queue.objects.create(**validated_data)
