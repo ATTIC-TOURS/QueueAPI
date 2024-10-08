@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from queues.views import service_api, branch_api, queue_api, window_api, status_api, setup_api, printer_api
+from queues.views import service_api, branch_api, queue_api, window_api, status_api, setup_api, printer_api, markqueue_api
 
 
 urlpatterns = [
@@ -20,6 +20,9 @@ urlpatterns = [
     path("printer/<int:branch_id>/", printer_api.printer),
     path("printer_status/<str:mac_address>/", printer_api.printer_status),
     path("mobile_status/<str:mac_address>/", setup_api.mobile_status),
+    path("in_progress_queues/<int:branch_id>/", queue_api.in_progress_queues),
+    path("waiting_queues/<int:branch_id>/", queue_api.waiting_queues),
+    path("markqueues/<int:branch_id>/", markqueue_api.markqueue_list),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

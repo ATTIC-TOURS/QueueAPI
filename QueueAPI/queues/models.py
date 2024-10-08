@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils import timezone
 
 
 class Service(models.Model):
@@ -64,5 +65,10 @@ class Queue(models.Model):
     queue_no =  models.PositiveIntegerField(blank=False, null=False)
     status_id = models.ForeignKey(Status, on_delete=models.CASCADE, blank=False, null=False)
     is_called = models.BooleanField(default=False, blank=False, null=False)
-    created_at = models.DateTimeField(auto_now=True, blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now(), blank=False, null=False)
     updated_at = models.DateTimeField(blank=True, null=True)
+
+
+class MarkQueue(models.Model):
+    branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
+    text = models.CharField(max_length=200, blank=False, null=False)  

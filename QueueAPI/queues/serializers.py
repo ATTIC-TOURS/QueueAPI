@@ -111,3 +111,16 @@ class PrinterSerializer(serializers.Serializer):
         instance.branch_id = validated_data.get("branch_id", instance.branch_id)
         instance.save()
         return instance
+
+
+class MarkQueueSerializer(serializers.Serializer):
+    id = serializers.IntegerField(read_only=True)
+    text = serializers.CharField(read_only=True)
+    
+    def create(self, validated_data):
+        return Window.objects.create(**validated_data)
+    
+    def update(self, instance, validated_data):
+        instance.name = validated_data.get("text", instance.name)
+        instance.save()
+        return instance

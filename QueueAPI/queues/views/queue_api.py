@@ -99,7 +99,33 @@ def no_queue_waiting_status(request, branch_id, service_id, format=None):
         return Response(no_waiting_status)
 
 
+@api_view(["GET"])
+def in_progress_queues(request, branch_id, format=None):
+    if request.method == "GET":
+        queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="in-progress").id,
+            created_at__gte=timezone.now().date()
+        )
+        serializer = QueueSerializer(queues, many=True)
+        return Response(serializer.data)
+
+
+@api_view(["GET"])
+def waiting_queues(request, branch_id, format=None):
+    if request.method == "GET":
+        queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="waiting").id,
+            created_at__gte=timezone.now().date()
+        )
+        serializer = QueueSerializer(queues, many=True)
+        return Response(serializer.data)
+
+
+# ----------------
 # mobile test case
+# ----------------
 # CREATE A NEW QUEUE
 # http POST http://127.0.0.1:8000/queues/1/1/ queue_no=4
 
@@ -108,3 +134,12 @@ def no_queue_waiting_status(request, branch_id, service_id, format=None):
 
 # GET THE SERVICES
 # http GET http://127.0.0.1:8000/services/
+
+# -------------
+# TV test case
+# -------------
+# GET IN PROGRESS QUEUES
+# http GET http://127.0.0.1:8000/in_progress_queues/1/
+
+# GET WAITING QUEUES
+# http GET http://127.0.0.1:8000/waiting_queues/1/
