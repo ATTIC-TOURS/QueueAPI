@@ -21,7 +21,11 @@ def branch_login(request, pk, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == "POST":
-        print(request.data["password"])
         if branch.password == request.data["password"]:
             return Response({"status": True})
         return Response({"status": False})
+
+
+# mobile test case
+# http GET http://127.0.0.1:8000/branches/
+# http POST http://127.0.0.1:8000/branch_login/1/ password=1111
