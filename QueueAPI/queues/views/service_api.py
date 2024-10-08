@@ -38,3 +38,7 @@ def service_detail(request, pk, format=None):
     elif request.method == "DELETE":
         service.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+# mobile test case
+# http GET http://127.0.0.1:8000/services/
