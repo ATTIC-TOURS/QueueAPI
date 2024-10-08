@@ -19,6 +19,7 @@ urlpatterns = [
     path("no_queue_waiting_status/<int:branch_id>/<int:service_id>/", queue_api.no_queue_waiting_status),
     path("printer/<int:branch_id>/", printer_api.printer),
     path("printer_status/<str:mac_address>/", printer_api.printer_status),
+    path("mobile_status/<str:mac_address>/", setup_api.mobile_status),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

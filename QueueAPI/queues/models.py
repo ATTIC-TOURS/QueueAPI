@@ -53,7 +53,8 @@ class Mobile(models.Model):
     is_active = models.BooleanField(default=True, blank=False, null=False)
     
     def __str__(self):
-        return f"{self.branch_id}-{self.mac_address}"
+        label = "ACTIVE" if self.is_active else "INACTIVE"
+        return f"{self.branch_id}-{self.mac_address}-{label}"
     
 
 class Queue(models.Model):
