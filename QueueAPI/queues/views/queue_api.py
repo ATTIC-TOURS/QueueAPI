@@ -4,6 +4,9 @@ from rest_framework.response import Response
 from queues.models import Queue, Status
 from queues.serializers import QueueSerializer
 from django.utils import timezone
+
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
     
 
 @api_view(["GET"])
@@ -33,11 +36,12 @@ def current_queues(request, branch_id, format=None):
         return Response(serializer.data)
 
 
+
 @api_view(["PATCH"])
-def queue_call(request, format=None):
+def queue_call(request, branch_id, queue_id, format=None):
     # request.data -> queue_id, window_id
     try:
-        queue = Queue.objects.get(pk=request.data["queue_id"])
+        queue = Queue.objects.get(pk=queue_id)
     except Queue.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == "PATCH":
@@ -49,13 +53,30 @@ def queue_call(request, format=None):
         }
         serializer = QueueSerializer(queue, data=data, partial=True)
         if serializer.is_valid():
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"waiting-queue-{branch_id}", 
+                {
+                    "type": "update_queues",
+                    "branch_id": branch_id,
+                    "queue_status": "waiting"
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                f"in-progress-queue-{branch_id}", 
+                {
+                    "type": "update_queues",
+                    "branch_id": branch_id,
+                    "queue_status": "in-progress"
+                }
+            )
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 @api_view(["PATCH"])
-def queue_update(request, format=None):
+def queue_update(request, branch_id, format=None):
     # request.data -> queue_id, status_id
     try:
         queue = Queue.objects.get(pk=request.data["queue_id"])
@@ -67,6 +88,23 @@ def queue_update(request, format=None):
         }
         serializer = QueueSerializer(queue, data=updated_data, partial=True)
         if serializer.is_valid():
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"waiting-queue-{branch_id}", 
+                {
+                    "type": "update_queues",
+                    "branch_id": branch_id,
+                    "queue_status": "waiting"
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                f"in-progress-queue-{branch_id}", 
+                {
+                    "type": "update_queues",
+                    "branch_id": branch_id,
+                    "queue_status": "in-progress"
+                }
+            )
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -86,6 +124,24 @@ def queue(request, branch_id, service_id, format=None):
         }
         serializer = QueueSerializer(data=new_queue_data)
         if serializer.is_valid():
+            # update_ws_queues("waiting", branch_id)
+            channel_layer = get_channel_layer()
+            async_to_sync(channel_layer.group_send)(
+                f"waiting-queue-{branch_id}", 
+                {
+                    "type": "update_queues",
+                    "branch_id": branch_id,
+                    "queue_status": "waiting"
+                }
+            )
+            async_to_sync(channel_layer.group_send)(
+                f"in-progress-queue-{branch_id}", 
+                {
+                    "type": "update_queues",
+                    "branch_id": branch_id,
+                    "queue_status": "in-progress"
+                }
+            )
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -105,28 +161,28 @@ def no_queue_waiting_status(request, branch_id, service_id, format=None):
         return Response(no_waiting_status)
 
 
-@api_view(["GET"])
-def in_progress_queues(request, branch_id, format=None):
-    if request.method == "GET":
-        queues = Queue.objects.filter(
-            branch_id=branch_id,
-            status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=timezone.now().date()
-        )
-        serializer = QueueSerializer(queues, many=True)
-        return Response(serializer.data)
+# @api_view(["GET"])
+# def in_progress_queues(request, branch_id, format=None):
+#     if request.method == "GET":
+#         queues = Queue.objects.filter(
+#             branch_id=branch_id,
+#             status_id=Status.objects.get(name="in-progress").id,
+#             created_at__gte=timezone.now().date()
+#         )
+#         serializer = QueueSerializer(queues, many=True)
+#         return Response(serializer.data)
 
 
-@api_view(["GET"])
-def waiting_queues(request, branch_id, format=None):
-    if request.method == "GET":
-        queues = Queue.objects.filter(
-            branch_id=branch_id,
-            status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=timezone.now().date()
-        )
-        serializer = QueueSerializer(queues, many=True)
-        return Response(serializer.data)
+# @api_view(["GET"])
+# def waiting_queues(request, branch_id, format=None):
+#     if request.method == "GET":
+#         queues = Queue.objects.filter(
+#             branch_id=branch_id,
+#             status_id=Status.objects.get(name="waiting").id,
+#             created_at__gte=timezone.now().date()
+#         )
+#         serializer = QueueSerializer(queues, many=True)
+#         return Response(serializer.data)
 
 
 # ----------------

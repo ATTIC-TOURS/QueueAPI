@@ -1,0 +1,14 @@
+[APPLY]
+http POST http://127.0.0.1:8000/queues/<int:branch_id>/<int:service_id>/ queue_no=1 
+
+http POST http://127.0.0.1:8000/queues/1/1/ queue_no=100
+
+[CALL]
+http PATCH http://127.0.0.1:8000/queue_call/<int:branch_id>/<int:queue_id>/ window_id=1
+
+http PATCH http://127.0.0.1:8000/queue_call/1/1/ window_id=2
+
+[DONE/UPDATE]
+http PATCH http://127.0.0.1:8000/queue_update/<int:branch_id/ queue_id=1 status_id=1
+
+http PATCH http://127.0.0.1:8000/queue_update/1/ queue_id=10 status_id=1

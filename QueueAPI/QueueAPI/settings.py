@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-e4&cbh_m^*9+bfn^k3yocles&-&n@j80(%s5afjpn$xv#hs%=s
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -36,11 +36,16 @@ INSTALLED_APPS = [
     "django.contrib.contenttypes",
     "django.contrib.sessions",
     "django.contrib.messages",
+    "daphne",
     "django.contrib.staticfiles",
     "rest_framework",
     "queues",
     "corsheaders",
+    "channels",
+    
 ]
+
+
 
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
@@ -92,8 +97,14 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = "QueueAPI.wsgi.application"
+ASGI_APPLICATION = "QueueAPI.asgi.application"
 
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases

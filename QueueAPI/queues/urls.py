@@ -11,18 +11,21 @@ urlpatterns = [
     path("current_queue_stats/<int:branch_id>/", queue_api.current_queue_stats),
     path("current_queues/<int:branch_id>/", queue_api.current_queues),
     path("windows/", window_api.window_list),
-    path("queue_call/", queue_api.queue_call),
+    path("queue_call/<int:branch_id>/<int:queue_id>/", queue_api.queue_call),
     path("viewable_status/", status_api.viewable_status),
-    path("queue_update/", queue_api.queue_update),
+    path("queue_update/<int:branch_id>/", queue_api.queue_update),
     path("mobile/", setup_api.mobile),
     path("queues/<int:branch_id>/<int:service_id>/", queue_api.queue),
     path("no_queue_waiting_status/<int:branch_id>/<int:service_id>/", queue_api.no_queue_waiting_status),
     path("printer/<int:branch_id>/", printer_api.printer),
     path("printer_status/<str:mac_address>/", printer_api.printer_status),
     path("mobile_status/<str:mac_address>/", setup_api.mobile_status),
-    path("in_progress_queues/<int:branch_id>/", queue_api.in_progress_queues),
-    path("waiting_queues/<int:branch_id>/", queue_api.waiting_queues),
     path("markqueues/<int:branch_id>/", markqueue_api.markqueue_list),
+    
+    
+    # REAL-TIME
+    # path("in_progress_queues/<int:branch_id>/", queue_api.in_progress_queues),
+    # path("waiting_queues/<int:branch_id>/", queue_api.waiting_queues),
 ]
 
 urlpatterns = format_suffix_patterns(urlpatterns)

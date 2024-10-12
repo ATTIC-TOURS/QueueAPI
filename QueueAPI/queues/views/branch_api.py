@@ -21,6 +21,7 @@ def branch_login(request, pk, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == "POST":
+        print(request.data)
         if branch.password == request.data["password"]:
             return Response({"status": True})
         return Response({"status": False})
