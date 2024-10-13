@@ -26,7 +26,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
             await self.send(text_data=json.dumps(queues))
         
     async def disconnect(self , close_code):
-        await self.channel_name.group_discard(
+        await self.channel_layer.group_discard(
             self.roomGroupName , 
             self.channel_name 
         )
