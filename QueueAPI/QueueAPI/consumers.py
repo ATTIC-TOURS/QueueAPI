@@ -9,7 +9,7 @@ from queues.serializers import QueueSerializer
 class QueueConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
-        self.queue_status = self.scope['url_route']['kwargs']['queue_status']
+        self.queue_status = self.scope['url_route']['kwargs']['queue_status'] # queue_status -> waiting, in-progress, call
         self.room_name = self.scope['url_route']['kwargs']['branch_id']
         self.roomGroupName = f"{self.queue_status}-queue-{self.room_name}"
         await self.channel_layer.group_add(
@@ -17,6 +17,13 @@ class QueueConsumer(AsyncWebsocketConsumer):
             self.channel_name
         )
         await self.accept()
+        
+        if self.queue_status == "waiting":
+            queues = await self.get_waiting_queues(self.room_name)
+            await self.send(text_data=json.dumps(queues))
+        elif self.queue_status == "in-progress":
+            queues = await self.get_in_progress_queues(self.room_name)
+            await self.send(text_data=json.dumps(queues))
         
     async def disconnect(self , close_code):
         await self.channel_name.group_discard(
@@ -26,6 +33,16 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
     async def receive(self, text_data):
         pass
+    
+    async def update_call_applicant(self, event):
+        service = event["service"]
+        window = event["window"]
+        queue_no = event["queue_no"]
+        await self.send(text_data=json.dumps({
+            "service": service, 
+            "window": window, 
+            "queue_no": queue_no 
+        }))
 
     async def update_queues(self, event):
         branch_id = event["branch_id"]

@@ -1,7 +1,7 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from queues.models import Queue, Status
+from queues.models import Queue, Status, Service, Window
 from queues.serializers import QueueSerializer
 from django.utils import timezone
 
@@ -53,6 +53,10 @@ def queue_call(request, branch_id, queue_id, format=None):
         }
         serializer = QueueSerializer(queue, data=data, partial=True)
         if serializer.is_valid():
+            service_name = queue.service_id.name
+            window_name = Window.objects.get(id=request.data["window_id"]).name
+            queue_no = queue.queue_no
+            # ------------Web Socket (Begin)------------ #
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f"waiting-queue-{branch_id}", 
@@ -70,6 +74,16 @@ def queue_call(request, branch_id, queue_id, format=None):
                     "queue_status": "in-progress"
                 }
             )
+            async_to_sync(channel_layer.group_send)(
+                f"call-queue-{branch_id}", 
+                {
+                    "type": "update_call_applicant",
+                    "service": service_name,
+                    "window": window_name,
+                    "queue_no": queue_no
+                }
+            )
+            # ------------Web Socket (End)------------ #
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
