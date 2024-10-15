@@ -96,3 +96,6 @@ def create_default_data(apps, schema_editor):
             branch_id=Branch.objects.get(id=mark_queue["branch_id"]),
             text=mark_queue["text"]
         )
+
+# ADD THIS TO THE MIGRATIONS
+# migrations.RunPython(create_default_data)
