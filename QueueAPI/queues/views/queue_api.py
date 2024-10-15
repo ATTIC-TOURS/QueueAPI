@@ -59,9 +59,9 @@ def queue_call(request, branch_id, queue_id, format=None):
         }
         serializer = QueueSerializer(queue, data=data, partial=True)
         if serializer.is_valid():
-            service_name = queue.service_id.name
+            name = queue.name
             window_name = Window.objects.get(id=request.data["window_id"]).name
-            queue_no = queue.queue_no
+            queue_code = queue.code
             # ------------Web Socket (Begin)------------ #
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
@@ -84,9 +84,9 @@ def queue_call(request, branch_id, queue_id, format=None):
                 f"call-queue-{branch_id}", 
                 {
                     "type": "update_call_applicant",
-                    "service": service_name,
-                    "window": window_name,
-                    "queue_no": queue_no
+                    "name": name,
+                    "window_name": window_name,
+                    "queue_code": queue_code
                 }
             )
             # ------------Web Socket (End)------------ #

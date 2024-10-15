@@ -48,12 +48,12 @@ http GET http://127.0.0.1:8000/current_queues/1/
 http GET http://127.0.0.1:8000/windows/
 http PATCH http://127.0.0.1:8000/queue_call/<int:branch_id>/<int:queue_id>/ window_id=1
 
-http PATCH http://192.168.1.23:8000/queue_call/1/28/ window_id=3
+http PATCH http://127.0.0.1:8000/queue_call/1/1/ window_id=3
 
 4 done taking care of the applicant
 http GET http://127.0.0.1:8000/viewable_status/
 http PATCH http://127.0.0.1:8000/queue_update/<int:branch_id/ queue_id=1 status_id=1
-http PATCH http://127.0.0.1:8000/queue_update/1/ queue_id=9 status_id=1
+http PATCH http://127.0.0.1:8000/queue_update/1/ queue_id=1 status_id=1
 
 ---
 TV

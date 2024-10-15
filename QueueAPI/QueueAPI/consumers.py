@@ -35,13 +35,13 @@ class QueueConsumer(AsyncWebsocketConsumer):
         pass
     
     async def update_call_applicant(self, event):
-        service = event["service"]
-        window = event["window"]
-        queue_no = event["queue_no"]
+        name = event["name"]
+        window_name = event["window_name"]
+        queue_code = event["queue_code"]
         await self.send(text_data=json.dumps({
-            "service": service, 
-            "window": window, 
-            "queue_no": queue_no#service[0].upper() + str(queue_no) 
+            "name": name, 
+            "window_name": window_name, 
+            "queue_code": queue_code
         }))
 
     async def update_queues(self, event):
