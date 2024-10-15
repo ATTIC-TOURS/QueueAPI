@@ -141,8 +141,11 @@ def queue(request, branch_id, service_id, format=None):
             "queue_no": request.data["queue_no"],
             "status_id": Status.objects.get(name="waiting").id,
             "is_called": False,
-            "code": Service.objects.get(id=service_id).name[0].upper() + str(request.data["queue_no"])
+            "code": Service.objects.get(id=service_id).name[0].upper() + str(request.data["queue_no"]),
+            "name": request.data["name"],
         }
+        if "email" in request.data:
+            new_queue_data["email"] = request.data["email"]
         serializer = QueueSerializer(data=new_queue_data)
         if serializer.is_valid():
             # update_ws_queues("waiting", branch_id)

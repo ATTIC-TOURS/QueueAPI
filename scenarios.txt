@@ -26,8 +26,9 @@ http GET http://192.168.1.23:8000/no_queue_waiting_status/1/1/
 4 apply to the service (issue queue no)
 (parameter->branch_id)
 http POST http://127.0.0.1:8000/printer/1/ mac_address=123.123.123.123 
+
 (parameter->branch_id, service_id)
-http POST http://192.168.1.23:8000/queues/1/1/ queue_no=999999
+http POST http://127.0.0.1:8000/queues/1/1/ queue_no=1 name=kenji (email=fadfs@daf.com) <- optional
 
 ---
 Web

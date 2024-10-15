@@ -68,6 +68,8 @@ class Queue(models.Model):
     created_at = models.DateTimeField(default=timezone.now, blank=False, null=False)
     updated_at = models.DateTimeField(blank=True, null=True)
     code = models.CharField(max_length=10, blank=False, null=False)
+    name = models.CharField(max_length=50, blank=False, null=False)
+    email = models.CharField(max_length=100, blank=True, null=True)
 
 
 class MarkQueue(models.Model):
