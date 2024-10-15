@@ -41,7 +41,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps({
             "service": service, 
             "window": window, 
-            "queue_no": queue_no 
+            "queue_no": queue_no#service[0].upper() + str(queue_no) 
         }))
 
     async def update_queues(self, event):

@@ -28,11 +28,17 @@ def current_queue_stats(request, branch_id, format=None):
 @api_view(["GET"])
 def current_queues(request, branch_id, format=None):
     if request.method == "GET":
-        queues = Queue.objects.filter(
+        waiting_queues = Queue.objects.filter(
             branch_id=branch_id,
+            status_id=Status.objects.get(name="waiting").id,
             created_at__gte=timezone.now().date()
         )
-        serializer = QueueSerializer(queues, many=True)
+        in_progress_queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="in-progress").id,
+            created_at__gte=timezone.now().date()
+        )
+        serializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
         return Response(serializer.data)
 
 
