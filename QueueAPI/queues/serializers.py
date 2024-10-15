@@ -64,6 +64,7 @@ class QueueSerializer(serializers.Serializer):
     is_called = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True)
     updated_at = serializers.DateTimeField(required=False)
+    code = serializers.CharField(max_length=10)
     
     def create(self, validated_data):
         return Queue.objects.create(**validated_data)

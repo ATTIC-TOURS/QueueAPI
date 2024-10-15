@@ -67,6 +67,7 @@ class Queue(models.Model):
     is_called = models.BooleanField(default=False, blank=False, null=False)
     created_at = models.DateTimeField(default=timezone.now, blank=False, null=False)
     updated_at = models.DateTimeField(blank=True, null=True)
+    code = models.CharField(max_length=10, blank=False, null=False)
 
 
 class MarkQueue(models.Model):
