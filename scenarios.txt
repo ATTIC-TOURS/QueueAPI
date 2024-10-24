@@ -28,7 +28,7 @@ http GET http://192.168.1.23:8000/no_queue_waiting_status/1/1/
 http POST http://127.0.0.1:8000/printer/1/ mac_address=123.123.123.123 
 
 (parameter->branch_id, service_id)
-http POST http://127.0.0.1:8000/queues/1/1/ queue_no=1 name=kenji (email=fadfs@daf.com) <- optional
+http POST http://127.0.0.1:8000/queues/1/1/ queue_no=900 name=yas (email=fadfs@daf.com) <- optional
 
 ---
 Web
@@ -48,12 +48,12 @@ http GET http://127.0.0.1:8000/current_queues/1/
 http GET http://127.0.0.1:8000/windows/
 http PATCH http://127.0.0.1:8000/queue_call/<int:branch_id>/<int:queue_id>/ window_id=1
 
-http PATCH http://127.0.0.1:8000/queue_call/1/1/ window_id=3
+http PATCH http://127.0.0.1:8000/queue_call/1/4/ window_id=3
 
 4 done taking care of the applicant
 http GET http://127.0.0.1:8000/viewable_status/
 http PATCH http://127.0.0.1:8000/queue_update/<int:branch_id/ queue_id=1 status_id=1
-http PATCH http://127.0.0.1:8000/queue_update/1/ queue_id=1 status_id=1
+http PATCH http://127.0.0.1:8000/queue_update/1/ queue_id=4 status_id=1
 
 ---
 TV

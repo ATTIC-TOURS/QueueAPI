@@ -18,12 +18,20 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         
+        # sends these data first time connected
         if self.queue_status == "waiting":
             queues = await self.get_waiting_queues(self.room_name)
             await self.send(text_data=json.dumps(queues))
         elif self.queue_status == "in-progress":
             queues = await self.get_in_progress_queues(self.room_name)
             await self.send(text_data=json.dumps(queues))
+        elif self.queue_status == "controller":
+            queues = await self.get_controller_queues(self.room_name)
+            await self.send(text_data=json.dumps(queues))
+        elif self.queue_status == "stats":
+            queues = await self.get_queue_stats(self.room_name)
+            await self.send(text_data=json.dumps(queues))
+        
         
     async def disconnect(self , close_code):
         await self.channel_layer.group_discard(
@@ -53,6 +61,12 @@ class QueueConsumer(AsyncWebsocketConsumer):
         elif queue_status == "in-progress":
             queues = await self.get_in_progress_queues(branch_id)
             await self.send(text_data=json.dumps(queues))
+        elif queue_status == "controller":
+            queues = await self.get_controller_queues(self.room_name)
+            await self.send(text_data=json.dumps(queues))
+        elif self.queue_status == "stats":
+            queues = await self.get_queue_stats(self.room_name)
+            await self.send(text_data=json.dumps(queues))
         
     @database_sync_to_async
     def get_in_progress_queues(self , branch_id):
@@ -73,3 +87,32 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         serializer = QueueSerializer(queues, many=True) 
         return serializer.data
+    
+    @database_sync_to_async
+    def get_controller_queues(self , branch_id):
+        waiting_queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="waiting").id,
+            created_at__gte=timezone.now().date()
+        )
+        in_progress_queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="in-progress").id,
+            created_at__gte=timezone.now().date()
+        )
+        serializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
+        return serializer.data
+
+    @database_sync_to_async
+    def get_queue_stats(self , branch_id):
+        statuses = Status.objects.all()
+        statuses = {status.name: 0 for status in statuses}
+        queues = Queue.objects.filter(
+            branch_id=branch_id,
+            created_at__gte=timezone.now().date()
+        )
+        for queue in queues:
+            queue_status = queue.status_id.name
+            statuses[queue_status] += 1
+        statuses["finish"] = statuses["pending"] + statuses["complete"]
+        return statuses
