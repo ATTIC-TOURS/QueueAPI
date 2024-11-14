@@ -2,8 +2,26 @@ from django.db import models
 from django.utils import timezone
 
 
+class Category(models.Model):
+    name = models.CharField(max_length=50, blank=False, null=False)
+    display_name = models.CharField(max_length=50, blank=False, null=False)
+    
+    def __str__(self):
+        return self.name
+
+
+class ServiceType(models.Model):
+    name = models.CharField(max_length=50, blank=False, null=False)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
+    
+    def __str__(self):
+        return self.name
+
+
 class Service(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
+    service_type_id = models.ForeignKey(ServiceType, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
         return self.name
