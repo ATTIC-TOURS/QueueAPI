@@ -7,7 +7,7 @@ urlpatterns = [
     
     # branch api
     path("branches/", branch_api.branch_list),
-    path("branch_login/<int:pk>/", branch_api.branch_login),
+    path("branch_login/<int:branch_id>/", branch_api.branch_login),
     
     # category api
     path("categories/", category_api.category_list),
