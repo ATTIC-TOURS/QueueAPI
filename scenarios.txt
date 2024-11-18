@@ -21,7 +21,7 @@ http GET http://127.0.0.1:8000/services/
 
 3 view waiting status
 (parameter->branch_id, service_id)
-http GET http://192.168.1.23:8000/no_queue_waiting_status/1/1/ 
+http GET http://192.168.1.12:8000/no_queue_waiting_status/1/1/ 
 
 4 apply to the service (issue queue no)
 (parameter->branch_id)
