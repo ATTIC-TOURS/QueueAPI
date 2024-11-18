@@ -1,47 +1,13 @@
 from rest_framework import status
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
-from queues.models import Queue, Status, Service, Window
+from queues.models import Queue, Status, Service, Window, Category, Service
 from queues.serializers import QueueSerializer
 from django.utils import timezone
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
     
-
-# @api_view(["GET"])
-# def current_queue_stats(request, branch_id, format=None):
-#     statuses = Status.objects.all()
-#     statuses = {status.name: 0 for status in statuses}
-#     if request.method == "GET":
-#         queues = Queue.objects.filter(
-#             branch_id=branch_id,
-#             created_at__gte=timezone.now().date()
-#         )
-#         for queue in queues:
-#             queue_status = queue.status_id.name
-#             statuses[queue_status] += 1
-#         statuses["finish"] = statuses["pending"] + statuses["complete"]
-#         return Response(statuses)
-
-
-# @api_view(["GET"])
-# def current_queues(request, branch_id, format=None):
-#     if request.method == "GET":
-#         waiting_queues = Queue.objects.filter(
-#             branch_id=branch_id,
-#             status_id=Status.objects.get(name="waiting").id,
-#             created_at__gte=timezone.now().date()
-#         )
-#         in_progress_queues = Queue.objects.filter(
-#             branch_id=branch_id,
-#             status_id=Status.objects.get(name="in-progress").id,
-#             created_at__gte=timezone.now().date()
-#         )
-#         serializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
-#         return Response(serializer.data)
-
-
 
 @api_view(["PATCH"])
 def queue_call(request, branch_id, queue_id, format=None):
@@ -162,25 +128,51 @@ def queue_update(request, branch_id, format=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+def generate_queue_code(service_id, queue_no):
+    service = Service.objects.get(id=service_id)
+    category = Category.objects.get(id=service.category_id_id)
+    return category.name[0].upper() + str(queue_no)
+
+def generate_new_queue(branch_id, service_id, queue_no, name, email):
+    
+    service = Service.objects.get(id=service_id)
+    category_id = Category.objects.get(id=service.category_id_id).id
+    
+    return {
+        "branch_id": branch_id,
+        "category_id": category_id,
+        "service_id": service_id,
+        "queue_no": queue_no,
+        "status_id": Status.objects.get(name="waiting").id,
+        "is_called": False,
+        "code": generate_queue_code(service_id, queue_no),
+        "name": name,
+        "email": email
+    }
+
+# http POST http://192.168.1.12:8000/queues/1/1/ queue_no=1 name=kenji email=krimssmirk003@gmail.com
+
 @api_view(["POST"])
 def queue(request, branch_id, service_id, format=None):
     # request.data -> branch_id, service_id, queue_no
+    
+    # ------------
+    # request.data
+    # ------------
+    # queue_no
+    r_queue_no = request.data["queue_no"]
+    # name
+    r_name = request.data["name"]
+    # email
+    r_email = request.data["email"] if "email" in request.data else None
+    
     if request.method == "POST":
-        new_queue_data = {
-            "branch_id": branch_id,
-            "service_id": service_id,
-            # "window_id": None,
-            "queue_no": request.data["queue_no"],
-            "status_id": Status.objects.get(name="waiting").id,
-            "is_called": False,
-            "code": Service.objects.get(id=service_id).name[0].upper() + str(request.data["queue_no"]),
-            "name": request.data["name"],
-        }
-        if "email" in request.data:
-            new_queue_data["email"] = request.data["email"]
-        serializer = QueueSerializer(data=new_queue_data)
+        new_queue = generate_new_queue(branch_id, service_id, r_queue_no, r_name, r_email)
+            
+        serializer = QueueSerializer(data=new_queue)
         if serializer.is_valid():
-            # update_ws_queues("waiting", branch_id)
+            
+            # BEGIN - notify web sockets
             channel_layer = get_channel_layer()
             async_to_sync(channel_layer.group_send)(
                 f"waiting-queue-{branch_id}", 
@@ -214,81 +206,37 @@ def queue(request, branch_id, service_id, format=None):
                     "queue_status": "controller"
                 }
             )
+            # END - notify web sockets
+            
             serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
+        
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# http get http://192.168.1.12:8000/branch/1/waiting/service/1/
+
 @api_view(["GET"])
 def no_queue_waiting_status(request, branch_id, service_id, format=None):
-    if request.method == "GET":
-        queues = Queue.objects.filter(
-            branch_id=branch_id,
-            service_id=service_id,
-            status_id=Status.objects.get(name="waiting").id,
+    
+    service = Service.objects.get(id=service_id)
+    category = Category.objects.get(id=service.category_id_id)
+    queues = Queue.objects.filter(
+            branch_id_id=branch_id,
+            category_id_id=category.id,
+            status_id_id=Status.objects.get(name="waiting").id,
             created_at__gte=timezone.now().date()
         )
-        print(queues)
-        no_waiting_status = len(queues)
-        return Response(no_waiting_status)
-
-
-# @api_view(["GET"])
-# def in_progress_queues(request, branch_id, format=None):
-#     if request.method == "GET":
-#         queues = Queue.objects.filter(
-#             branch_id=branch_id,
-#             status_id=Status.objects.get(name="in-progress").id,
-#             created_at__gte=timezone.now().date()
-#         )
-#         serializer = QueueSerializer(queues, many=True)
-#         return Response(serializer.data)
-
-
-# @api_view(["GET"])
-# def waiting_queues(request, branch_id, format=None):
-#     if request.method == "GET":
-#         queues = Queue.objects.filter(
-#             branch_id=branch_id,
-#             status_id=Status.objects.get(name="waiting").id,
-#             created_at__gte=timezone.now().date()
-#         )
-#         serializer = QueueSerializer(queues, many=True)
-#         return Response(serializer.data)
-
-
-# ----------------
-# web test case
-# ----------------
-# GET CURRENT QUEUE STATS
-# http GET http://127.0.0.1:8000/current_queue_stats/1/
-
-# GET CURRENT QUEUES
-# http GET http://127.0.0.1:8000/current_queues/1/
-
-# CALL APPLICANT
-# http POST http://127.0.0.1:8000/queue_call/ queue_id=1 window_id=1
-
-# UPDATE A QUEUE
-# http PATCH http://127.0.0.1:8000/queue_update/ queue_id=1 status_id=1
-
-# ----------------
-# mobile test case
-# ----------------
-# CREATE A NEW QUEUE
-# http POST http://127.0.0.1:8000/queues/1/1/ queue_no=4
-
-# GET THE NO OF WAITING STATUS
-# http GET http://127.0.0.1:8000/no_queue_waiting_status/1/1/
-
-# GET THE SERVICES
-# http GET http://127.0.0.1:8000/services/
-
-# -------------
-# TV test case
-# -------------
-# GET IN PROGRESS QUEUES
-# http GET http://127.0.0.1:8000/in_progress_queues/1/
-
-# GET WAITING QUEUES
-# http GET http://127.0.0.1:8000/waiting_queues/1/
+    
+    if request.method == "GET":
+        
+        if len(queues):
+            
+            n_waiting = len(queues)
+            return Response({
+                "category_name": category.name,
+                "service_name": service.name,
+                "n_waiting": n_waiting
+            })
+            
+        return Response(None)
