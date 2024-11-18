@@ -138,17 +138,31 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email):
     service = Service.objects.get(id=service_id)
     category_id = Category.objects.get(id=service.category_id_id).id
     
+    if email:
+    
+        return {
+            "branch_id": branch_id,
+            "category_id": category_id,
+            "service_id": service_id,
+            "queue_no": queue_no,
+            "status_id": Status.objects.get(name="waiting").id,
+            "is_called": False,
+            "code": generate_queue_code(service_id, queue_no),
+            "name": name,
+            "email": email
+        }
+        
     return {
-        "branch_id": branch_id,
-        "category_id": category_id,
-        "service_id": service_id,
-        "queue_no": queue_no,
-        "status_id": Status.objects.get(name="waiting").id,
-        "is_called": False,
-        "code": generate_queue_code(service_id, queue_no),
-        "name": name,
-        "email": email
-    }
+            "branch_id": branch_id,
+            "category_id": category_id,
+            "service_id": service_id,
+            "queue_no": queue_no,
+            "status_id": Status.objects.get(name="waiting").id,
+            "is_called": False,
+            "code": generate_queue_code(service_id, queue_no),
+            "name": name,
+        }
+    
 
 # http POST http://192.168.1.12:8000/queues/1/1/ queue_no=1 name=kenji email=krimssmirk003@gmail.com
 
@@ -229,14 +243,11 @@ def no_queue_waiting_status(request, branch_id, service_id, format=None):
         )
     
     if request.method == "GET":
-        
-        if len(queues):
-            
-            n_waiting = len(queues)
-            return Response({
-                "category_name": category.name,
-                "service_name": service.name,
-                "n_waiting": n_waiting
-            })
+        n_waiting = len(queues)
+        return Response({
+            "category_name": category.name,
+            "service_name": service.name,
+            "n_waiting": n_waiting
+        })
             
         return Response(None)
