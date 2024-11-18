@@ -78,6 +78,7 @@ class Mobile(models.Model):
 
 class Queue(models.Model):
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
+    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
     service_id = models.ForeignKey(Service, on_delete=models.CASCADE, blank=False, null=False)
     window_id = models.ForeignKey(Window, on_delete=models.CASCADE, blank=True, null=True)
     queue_no =  models.PositiveIntegerField(blank=False, null=False)
