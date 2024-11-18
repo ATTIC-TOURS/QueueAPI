@@ -88,6 +88,7 @@ class WindowSerializer(serializers.Serializer):
 class QueueSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     branch_id = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
+    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
     service_id = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), required=True)
     window_id = serializers.PrimaryKeyRelatedField(queryset=Window.objects.all(), required=False)
     queue_no = serializers.IntegerField()
