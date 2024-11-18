@@ -41,7 +41,7 @@ services = [
     {"name": "Visiting Relatives", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID},
     {"name": "Visiting Friends", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID},
     {"name": "Visiting US Military Personnel", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID},
-    {"name": "Spouse/Child of a Japanese Natioanl in the Philippines", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID},
+    {"name": "Spouse/Child of a Japanese National in the Philippines", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID},
     {"name": "Transit", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID},
     {"name": "Frequent Traveler", "category_id": JAPAN_VISA_ID, "service_type_id": MULTIPLE_ENTRY_ID},
     {"name": "Philippine Nationals with Considerable Financial Capacity", "category_id": JAPAN_VISA_ID, "service_type_id": MULTIPLE_ENTRY_ID},
