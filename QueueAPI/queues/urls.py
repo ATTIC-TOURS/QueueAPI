@@ -19,6 +19,7 @@ urlpatterns = [
     # service api
     path("services/", service_api.service_list),
     path("services/<int:pk>/", service_api.service_detail),
+    path("services/category/<int:category_id>/", service_api.service_by_category),
     
     
     
@@ -27,8 +28,13 @@ urlpatterns = [
     path("viewable_status/", status_api.viewable_status),
     path("queue_update/<int:branch_id>/", queue_api.queue_update),
     path("mobile/", setup_api.mobile),
+    
+    # generate new queue
     path("queues/<int:branch_id>/<int:service_id>/", queue_api.queue),
-    path("no_queue_waiting_status/<int:branch_id>/<int:service_id>/", queue_api.no_queue_waiting_status),
+    
+    # no of waiting in mobile UI
+    path("branch/<int:branch_id>/waiting/service/<int:service_id>/", queue_api.no_queue_waiting_status),
+    
     path("printer/<int:branch_id>/", printer_api.printer),
     path("printer_status/<str:mac_address>/", printer_api.printer_status),
     path("mobile_status/<str:mac_address>/", setup_api.mobile_status),
