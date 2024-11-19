@@ -11,6 +11,7 @@ urlpatterns = [
     
     # category api
     path("categories/", category_api.category_list),
+    path("categories/<int:category_id>/", category_api.category_detail),
     
     # service type api
     path("service_types/", service_type_api.service_type_list),
