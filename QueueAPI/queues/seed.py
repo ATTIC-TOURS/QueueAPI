@@ -12,6 +12,8 @@ branches = [
 
 categories = [
     {"name": "Japan Visa", "display_name": "Apply for Japan Visa"},
+    {"name": "Korea Visa", "display_name": "Apply for Korea Visa"},
+    {"name": "Ticket", "display_name": "Ticket"}
     {"name": "Claim Passport", "display_name": "Claim Passport"},
     {"name": "Visa Consultation", "display_name": "Visa Consultation"},
     {"name": "Add ons", "display_name": "Add ons"},
@@ -19,10 +21,12 @@ categories = [
 ]
 
 JAPAN_VISA_ID = 1
-CLAIM_PASSPORT_ID = 2
-VISA_CONSULTATION_ID = 3
-ADD_ONS_ID = 4
-OTHERS_ID = 5
+KOREA_VISA_ID = 2
+TICKET_ID = 3
+CLAIM_PASSPORT_ID = 4
+VISA_CONSULTATION_ID = 5
+ADD_ONS_ID = 6
+OTHERS_ID = 7
 
 service_types = [
     {"name": "Temporary Visitor", "category_id": JAPAN_VISA_ID},
@@ -51,6 +55,13 @@ services = [
     {"name": "Housekeeper hired by Diplomat/Official", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID},
     {"name": "Medical Stay", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID},
     {"name": "Nikkei-Jin", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID},
+    
+    {"name": "Korea Visa", "category_id": KOREA_VISA_ID, "service_type_id": None},
+    
+    {"name": "International", "category_id": TICKET_ID, "service_type_id": None},
+    {"name": "Domestic", "category_id": TICKET_ID, "service_type_id": None},
+    
+    
     {"name": "Filipino Parent travelling to Japan with JFC", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID},
     {"name": "Claim Passport", "category_id": CLAIM_PASSPORT_ID, "service_type_id": None},
     {"name": "Visa Consultation", "category_id": VISA_CONSULTATION_ID, "service_type_id": None},
