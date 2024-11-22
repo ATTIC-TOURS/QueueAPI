@@ -13,7 +13,7 @@ branches = [
 categories = [
     {"name": "Japan Visa", "display_name": "Apply for Japan Visa"},
     {"name": "Korea Visa", "display_name": "Apply for Korea Visa"},
-    {"name": "Ticket", "display_name": "Ticket"}
+    {"name": "Ticket", "display_name": "Ticket"},
     {"name": "Claim Passport", "display_name": "Claim Passport"},
     {"name": "Visa Consultation", "display_name": "Visa Consultation"},
     {"name": "Add ons", "display_name": "Add ons"},
