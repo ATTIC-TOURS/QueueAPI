@@ -2,8 +2,7 @@ import json
 from django.utils import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-from queues.models import Queue, Status
-from queues.serializers import QueueSerializer
+
 
 
 class QueueConsumer(AsyncWebsocketConsumer):
@@ -70,6 +69,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
     @database_sync_to_async
     def get_in_progress_queues(self , branch_id):
+        from queues.models import Queue, Status
+        from queues.serializers import QueueSerializer
         queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="in-progress").id,
@@ -80,6 +81,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
     @database_sync_to_async
     def get_waiting_queues(self , branch_id):
+        from queues.models import Queue, Status
+        from queues.serializers import QueueSerializer
         queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="waiting").id,
@@ -90,6 +93,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
     
     @database_sync_to_async
     def get_controller_queues(self , branch_id):
+        from queues.models import Queue, Status
+        from queues.serializers import QueueSerializer
         waiting_queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="waiting").id,
@@ -105,6 +110,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
 
     @database_sync_to_async
     def get_queue_stats(self , branch_id):
+        from queues.models import Queue, Status
+        from queues.serializers import QueueSerializer
         statuses = Status.objects.all()
         statuses = {status.name: 0 for status in statuses}
         queues = Queue.objects.filter(

@@ -16,9 +16,11 @@ from channels.auth import AuthMiddlewareStack
 from channels.routing import ProtocolTypeRouter , URLRouter
 from QueueAPI import routing
 
-django_asgi_app = get_asgi_application()
+
 os.environ.setdefault("DJANGO_SETTINGS_MODULE", "QueueAPI.settings")
 
+
+django_asgi_app = get_asgi_application()
 
 
 application = ProtocolTypeRouter({
@@ -29,5 +31,7 @@ application = ProtocolTypeRouter({
             )    
         )
 })
+
+
 ASGI_APPLICATION = 'QueueAPI.asgi.application'
 
