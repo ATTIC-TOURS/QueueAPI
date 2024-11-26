@@ -89,6 +89,7 @@ class Queue(models.Model):
     code = models.CharField(max_length=10, blank=False, null=False)
     name = models.CharField(max_length=50, blank=False, null=False)
     email = models.CharField(max_length=100, blank=True, null=True)
+    is_senior_pwd = models.BooleanField(default=False, blank=False, null=False)
 
 
 class MarkQueue(models.Model):

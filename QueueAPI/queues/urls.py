@@ -32,6 +32,8 @@ urlpatterns = [
     
     # generate new queue
     path("queues/<int:branch_id>/<int:service_id>/", queue_api.queue),
+    # remove queue
+    path("remove_queue/<int:branch_id>/<int:queue_id>/", queue_api.queue_detail),
     
     # no of waiting in mobile UI
     path("branch/<int:branch_id>/waiting/service/<int:service_id>/", queue_api.no_queue_waiting_status),

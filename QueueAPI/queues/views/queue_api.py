@@ -133,7 +133,7 @@ def generate_queue_code(service_id, queue_no):
     category = Category.objects.get(id=service.category_id_id)
     return category.name[0].upper() + str(queue_no)
 
-def generate_new_queue(branch_id, service_id, queue_no, name, email):
+def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_pwd):
     
     service = Service.objects.get(id=service_id)
     category_id = Category.objects.get(id=service.category_id_id).id
@@ -149,7 +149,8 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email):
             "is_called": False,
             "code": generate_queue_code(service_id, queue_no),
             "name": name,
-            "email": email
+            "email": email,
+            "is_senior_pwd": is_senior_pwd
         }
         
     return {
@@ -161,6 +162,7 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email):
             "is_called": False,
             "code": generate_queue_code(service_id, queue_no),
             "name": name,
+            "is_senior_pwd": is_senior_pwd
         }
     
 
@@ -184,12 +186,46 @@ def mobile_queue_status(data):
         return data_for_mobile 
     data_for_mobile["email"] = data["email"]
     return data_for_mobile
+
+
+def notify_channels(branch_id):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"waiting-queue-{branch_id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch_id,
+            "queue_status": "waiting"
+        }
+    )
+    async_to_sync(channel_layer.group_send)(
+        f"in-progress-queue-{branch_id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch_id,
+            "queue_status": "in-progress"
+        }
+    )
+    async_to_sync(channel_layer.group_send)(
+        f"stats-queue-{branch_id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch_id,
+            "queue_status": "stats"
+        }
+    )
+    async_to_sync(channel_layer.group_send)(
+        f"controller-queue-{branch_id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch_id,
+            "queue_status": "controller"
+        }
+    )
         
 
 @api_view(["POST"])
-def queue(request, branch_id, service_id, format=None):
-    # request.data -> branch_id, service_id, queue_no
-    
+def queue(request, branch_id, service_id, format=None):    
     # ------------
     # request.data
     # ------------
@@ -199,56 +235,40 @@ def queue(request, branch_id, service_id, format=None):
     r_name = request.data["name"]
     # email
     r_email = request.data["email"] if "email" in request.data else None
+    # is_senior_pwd
+    r_is_senior_pwd = request.data["is_senior_pwd"]
     
     if request.method == "POST":
-        new_queue = generate_new_queue(branch_id, service_id, r_queue_no, r_name, r_email)
+        new_queue = generate_new_queue(branch_id, service_id, r_queue_no, r_name, r_email, r_is_senior_pwd)
             
         serializer = QueueSerializer(data=new_queue)
         if serializer.is_valid():
             
             # BEGIN - notify web sockets
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"waiting-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "waiting"
-                }
-            )
-            async_to_sync(channel_layer.group_send)(
-                f"in-progress-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "in-progress"
-                }
-            )
-            async_to_sync(channel_layer.group_send)(
-                f"stats-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "stats"
-                }
-            )
-            async_to_sync(channel_layer.group_send)(
-                f"controller-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "controller"
-                }
-            )
+            notify_channels(branch_id)
             # END - notify web sockets
             
             serializer.save()
+            
             return Response(
                     mobile_queue_status(serializer.data), 
                     status=status.HTTP_201_CREATED
                 )
         
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["DELETE"])
+def queue_detail(request, branch_id, queue_id, format=None):
+    try:
+        queue = Queue.objects.get(pk=queue_id)
+    except Queue.DoesNotExist:
+        return Responst(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "DELETE":
+        queue.delete()
+        notify_channels(branch_id)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 # http get http://192.168.1.12:8000/branch/1/waiting/service/1/
