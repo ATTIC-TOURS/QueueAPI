@@ -6,6 +6,9 @@ class Category(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     display_name = models.CharField(max_length=50, blank=False, null=False)
     
+    class Meta:
+        verbose_name_plural = "categories"
+    
     def __str__(self):
         return self.name
 
@@ -95,3 +98,7 @@ class Queue(models.Model):
 class MarkQueue(models.Model):
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
     text = models.CharField(max_length=200, blank=False, null=False)  
+    
+    def __str__(self):
+        branch_name = Branch.objects.get(pk=self.branch_id_id).name
+        return f"{branch_name}-{self.text}"
