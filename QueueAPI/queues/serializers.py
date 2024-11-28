@@ -99,6 +99,7 @@ class QueueSerializer(serializers.Serializer):
     code = serializers.CharField(max_length=10)
     name = serializers.CharField(max_length=50)
     email = serializers.CharField(max_length=100, required=False)
+    is_senior_pwd  = serializers.BooleanField(required=True)
     
     def create(self, validated_data):
         return Queue.objects.create(**validated_data)
