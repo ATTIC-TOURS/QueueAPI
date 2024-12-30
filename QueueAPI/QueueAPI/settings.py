@@ -59,9 +59,20 @@ MIDDLEWARE = [
 CORS_ALLOW_CREDENTIALS = True
 
 CORS_ALLOWED_ORIGINS = [
-    "http://*",
-    "http://192.168.1.18:5173"
+    "http://192.168.1.18:5173",
+    "http://localhost:5173",
+    "http://192.168.1.35:5173",
+    "http://192.168.1.13:5173",
+    "http://192.168.1.6:5173"
 ]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://192.168.1.35:5173',  # Add your React app's origin here
+]
+
+CSRF_COOKIE_HTTPONLY = False  # Allow JS to read the CSRF cookie
+CSRF_COOKIE_SECURE = False  # Set this to True in production with HTTPS
+
 
 CORS_ALLOW_METHODS = [
     'DELETE',
@@ -75,6 +86,7 @@ CORS_ALLOW_METHODS = [
 CORS_ALLOW_HEADERS = [
     'Content-Type',
     'Authorization',
+    'X-CSRFToken',
 ]
 
 
@@ -156,3 +168,12 @@ STATIC_URL = "static/"
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+# EMAIL CONFIGURATION
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+EMAIL_HOST_USER = "attictoursdeveloper@gmail.com"
+EMAIL_HOST_PASSWORD = "fezqnglgjyvxekgr"
