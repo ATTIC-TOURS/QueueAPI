@@ -1,5 +1,6 @@
 from rest_framework import serializers
 from queues.models import Category, ServiceType, Service, Branch, Queue, Status, Window, Mobile, Printer
+from django.utils import timezone
 
 
 class CategorySerializer(serializers.Serializer):
@@ -94,12 +95,28 @@ class QueueSerializer(serializers.Serializer):
     queue_no = serializers.IntegerField()
     status_id = serializers.PrimaryKeyRelatedField(queryset=Status.objects.all(), required=True)
     is_called = serializers.BooleanField()
-    created_at = serializers.DateTimeField(read_only=True)
-    updated_at = serializers.DateTimeField(required=False)
+    created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%dT%H:%M:%S%z")
+    updated_at = serializers.DateTimeField(required=False, format="%Y-%m-%dT%H:%M:%S%z", allow_null=True)
     code = serializers.CharField(max_length=10)
     name = serializers.CharField(max_length=50)
     email = serializers.CharField(max_length=100, required=False)
     is_senior_pwd  = serializers.BooleanField(required=True)
+    
+    def to_representation(self, instance):
+        """
+        Override the default `to_representation` method to convert `created_at` 
+        and `updated_at` into the current time zone before returning to the client.
+        """
+        representation = super().to_representation(instance)
+
+        # Convert to current time zone for created_at and updated_at
+        if instance.created_at:
+            representation['created_at'] = timezone.localtime(instance.created_at).isoformat()
+
+        if instance.updated_at:
+            representation['updated_at'] = timezone.localtime(instance.updated_at).isoformat()
+
+        return representation
     
     def create(self, validated_data):
         return Queue.objects.create(**validated_data)

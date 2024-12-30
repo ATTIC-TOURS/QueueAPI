@@ -1,14 +1,16 @@
 from rest_framework import status
-from rest_framework.decorators import api_view
+from adrf.decorators import api_view
 from rest_framework.response import Response
-from queues.models import Queue, Status, Service, Window, Category, Service, Branch
+from queues.models import Queue, Status, Service, Window, Category, Branch
 from queues.serializers import QueueSerializer
 from django.utils import timezone
 
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
-    
 
+from queues import email
+    
+# http PATCH http://192.168.1.35:8000/queue_call/1/117/
 @api_view(["PATCH"])
 def queue_call(request, branch_id, queue_id, format=None):
     # request.data -> queue_id, window_id
@@ -166,8 +168,6 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_p
         }
     
 
-# http POST http://192.168.1.12:8000/queues/1/1/ queue_no=1 name=kenji email=krimssmirk003@gmail.com
-
 def mobile_queue_status(data):
     branch_name = Branch.objects.get(id=data["branch_id"]).name
     category_name = Category.objects.get(id=data["category_id"]).name
@@ -223,6 +223,7 @@ def notify_channels(branch_id):
         }
     )
         
+# http POST http://192.168.1.35:8000/queues/1/1/ queue_no=1 name="cat" email="" is_senior_pwd=False
 
 @api_view(["POST"])
 def queue(request, branch_id, service_id, format=None):    
@@ -243,12 +244,23 @@ def queue(request, branch_id, service_id, format=None):
             
         serializer = QueueSerializer(data=new_queue)
         if serializer.is_valid():
+            new_queue = serializer.save()
             
             # BEGIN - notify web sockets
-            notify_channels(branch_id)
+            notify_channels(new_queue.branch_id_id)
             # END - notify web sockets
             
-            serializer.save()
+            # ----- EMAIL (BEGIN) ------
+            if r_email:
+                queue_info = {
+                    "name": new_queue.name,
+                    "queue_code": new_queue.code,
+                    "datetime": new_queue.created_at,
+                    "category_name": new_queue.category_id.name,
+                    "service_name": new_queue.service_id.name
+                }
+                email.send_greetings(r_email, queue_info)              
+            # ----- EMAIL (END) --------
             
             return Response(
                     mobile_queue_status(serializer.data), 
@@ -258,12 +270,13 @@ def queue(request, branch_id, service_id, format=None):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# http delete http://192.168.1.35:8000/remove_queue/1/86/
 @api_view(["DELETE"])
 def queue_detail(request, branch_id, queue_id, format=None):
     try:
         queue = Queue.objects.get(pk=queue_id)
     except Queue.DoesNotExist:
-        return Responst(status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == "DELETE":
         queue.delete()
