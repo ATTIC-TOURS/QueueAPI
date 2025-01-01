@@ -12,14 +12,12 @@ class Category(models.Model):
     def __str__(self):
         return self.name
 
-
 class ServiceType(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
     
     def __str__(self):
         return self.name
-
 
 class Service(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
@@ -28,7 +26,6 @@ class Service(models.Model):
     
     def __str__(self):
         return self.name
-
 
 class Branch(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
@@ -40,13 +37,11 @@ class Branch(models.Model):
     def __str__(self):
         return self.name
     
-
 class Window(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     
     def __str__(self):
         return self.name
-
 
 class Status(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
@@ -56,7 +51,6 @@ class Status(models.Model):
         
     def __str__(self):
         return self.name
-
 
 class Printer(models.Model):
     mac_address = models.CharField(max_length=100, blank=False, null=False)
@@ -68,7 +62,6 @@ class Printer(models.Model):
         label = "ACTIVE" if self.is_active else "INACTIVE"
         return f"{self.branch_id}-{label}"
 
-
 class Mobile(models.Model):
     mac_address = models.CharField(max_length=100, blank=False, null=False)
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
@@ -78,9 +71,8 @@ class Mobile(models.Model):
         label = "ACTIVE" if self.is_active else "INACTIVE"
         return f"{self.branch_id}-{self.mac_address}-{label}"
     
-
 class Queue(models.Model):
-    branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
     category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
     service_id = models.ForeignKey(Service, on_delete=models.CASCADE, blank=False, null=False)
     window_id = models.ForeignKey(Window, on_delete=models.CASCADE, blank=True, null=True)
@@ -93,7 +85,6 @@ class Queue(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     email = models.CharField(max_length=100, blank=True, null=True)
     is_senior_pwd = models.BooleanField(default=False, blank=False, null=False)
-
 
 class MarkQueue(models.Model):
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
