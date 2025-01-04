@@ -1,5 +1,9 @@
 from django.db import models
 from django.utils import timezone
+from django.dispatch import receiver
+from django.db.models.signals import post_save, post_delete
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
 
 
 class Category(models.Model):
@@ -73,11 +77,11 @@ class Mobile(models.Model):
     
 class Queue(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
-    service_id = models.ForeignKey(Service, on_delete=models.CASCADE, blank=False, null=False)
-    window_id = models.ForeignKey(Window, on_delete=models.CASCADE, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
+    service = models.ForeignKey(Service, on_delete=models.CASCADE, blank=False, null=False)
+    window = models.ForeignKey(Window, on_delete=models.CASCADE, blank=True, null=True)
     queue_no =  models.PositiveIntegerField(blank=False, null=False)
-    status_id = models.ForeignKey(Status, on_delete=models.CASCADE, blank=False, null=False)
+    status = models.ForeignKey(Status, on_delete=models.CASCADE, blank=False, null=False)
     is_called = models.BooleanField(default=False, blank=False, null=False)
     created_at = models.DateTimeField(default=timezone.now, blank=False, null=False)
     updated_at = models.DateTimeField(blank=True, null=True)
@@ -85,6 +89,9 @@ class Queue(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     email = models.CharField(max_length=100, blank=True, null=True)
     is_senior_pwd = models.BooleanField(default=False, blank=False, null=False)
+    
+    def __str__(self):
+        return f"{self.window}"
 
 class MarkQueue(models.Model):
     branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
@@ -93,3 +100,79 @@ class MarkQueue(models.Model):
     def __str__(self):
         branch_name = Branch.objects.get(pk=self.branch_id_id).name
         return f"{branch_name}-{self.text}"
+
+@receiver([post_save, post_delete], sender=Queue)
+def ws_push_waiting_queues(sender, instance, **kwargs):
+    branch = instance.branch
+    
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"waiting-queue-{branch.id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch.id,
+            "queue_status": "waiting"
+        }
+    )
+
+@receiver([post_save, post_delete], sender=Queue)
+def ws_push_now_serving_queues(sender, instance, **kwargs):
+    branch = instance.branch
+    
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"in-progress-queue-{branch.id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch.id,
+            "queue_status": "in-progress"
+        }
+    )
+
+@receiver([post_save, post_delete], sender=Queue)
+def ws_push_current_stats(sender, instance, **kwargs):
+    branch = instance.branch
+    
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"stats-queue-{branch.id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch.id,
+            "queue_status": "stats"
+        }
+    )
+
+@receiver([post_save, post_delete], sender=Queue)
+def ws_push_controller_queues(sender, instance, **kwargs):
+    branch = instance.branch
+    
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        f"controller-queue-{branch.id}", 
+        {
+            "type": "update_queues",
+            "branch_id": branch.id,
+            "queue_status": "controller"
+        }
+    )
+
+@receiver([post_save, post_delete], sender=Queue)
+def ws_push_caleed_queue(sender, instance, **kwargs):
+    branch = instance.branch
+    name = instance.name
+    queue_code = instance.code
+    
+    if instance.window:
+        window = Window.objects.get(id=instance.window_id)
+        
+        channel_layer = get_channel_layer()
+        async_to_sync(channel_layer.group_send)(
+            f"call-queue-{branch.id}", 
+            {
+                "type": "update_call_applicant",
+                "name": name,
+                "window_name": window.name,
+                "queue_code": queue_code
+            }
+        )
