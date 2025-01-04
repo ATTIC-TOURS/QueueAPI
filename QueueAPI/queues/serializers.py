@@ -88,12 +88,12 @@ class WindowSerializer(serializers.Serializer):
 
 class QueueSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
-    branch_id = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
-    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
-    service_id = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), required=True)
-    window_id = serializers.PrimaryKeyRelatedField(queryset=Window.objects.all(), required=False)
+    branch = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
+    service = serializers.PrimaryKeyRelatedField(queryset=Service.objects.all(), required=True)
+    window = serializers.PrimaryKeyRelatedField(queryset=Window.objects.all(), required=False)
     queue_no = serializers.IntegerField()
-    status_id = serializers.PrimaryKeyRelatedField(queryset=Status.objects.all(), required=True)
+    status = serializers.PrimaryKeyRelatedField(queryset=Status.objects.all(), required=True)
     is_called = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%dT%H:%M:%S%z")
     updated_at = serializers.DateTimeField(required=False, format="%Y-%m-%dT%H:%M:%S%z", allow_null=True)
@@ -122,8 +122,8 @@ class QueueSerializer(serializers.Serializer):
         return Queue.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
-        instance.window_id = validated_data.get("window_id", instance.window_id)
-        instance.status_id = validated_data.get("status_id", instance.status_id)
+        instance.window = validated_data.get("window", instance.window)
+        instance.status = validated_data.get("status", instance.status)
         instance.is_called = validated_data.get("is_called", instance.is_called)
         instance.updated_at = validated_data.get("updated_at", instance.updated_at)
         instance.save()

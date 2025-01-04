@@ -4,8 +4,6 @@ from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
 
 
-
-
 class QueueConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
@@ -75,10 +73,10 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=timezone.now().date()
+            created_at__gte=timezone.now()
         )
-        serializer = QueueSerializer(queues, many=True) 
-        return serializer.data   
+        queueSerializer = QueueSerializer(queues, many=True) 
+        return queueSerializer.data   
         
     @database_sync_to_async
     def get_waiting_queues(self , branch_id):
@@ -87,10 +85,10 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=timezone.now().date()
+            created_at__gte=timezone.now()
         )
-        serializer = QueueSerializer(queues, many=True) 
-        return serializer.data
+        queueSerializer = QueueSerializer(queues, many=True) 
+        return queueSerializer.data
     
     @database_sync_to_async
     def get_controller_queues(self , branch_id):
@@ -99,15 +97,15 @@ class QueueConsumer(AsyncWebsocketConsumer):
         waiting_queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=timezone.now().date()
+            created_at__gte=timezone.now()
         )
         in_progress_queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=timezone.now().date()
+            created_at__gte=timezone.now()
         )
-        serializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
-        return serializer.data
+        queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
+        return queueSerializer.data
 
     @database_sync_to_async
     def get_queue_stats(self , branch_id):
@@ -116,14 +114,10 @@ class QueueConsumer(AsyncWebsocketConsumer):
         statuses = {status.name: 0 for status in statuses}
         queues = Queue.objects.filter(
             branch_id=branch_id,
-            created_at__gte=timezone.now().date()
+            created_at__gte=timezone.now()
         )
         for queue in queues:
             queue_status = queue.status_id.name
             statuses[queue_status] += 1
         statuses["finish"] = statuses["pending"] + statuses["complete"]
-        return statuses
-
-
-print("consumers.py is imported")
-
+        return statusess
