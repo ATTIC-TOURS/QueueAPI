@@ -18,15 +18,15 @@ class Category(models.Model):
 
 class ServiceType(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
     
     def __str__(self):
         return self.name
 
 class Service(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
-    category_id = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
-    service_type_id = models.ForeignKey(ServiceType, on_delete=models.CASCADE, blank=True, null=True)
+    category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
+    service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, blank=True, null=True)
     
     def __str__(self):
         return self.name
@@ -60,20 +60,20 @@ class Printer(models.Model):
     mac_address = models.CharField(max_length=100, blank=False, null=False)
     is_active = models.BooleanField(default=True, blank=False, null=False)
     error_msg = models.CharField(max_length=200, blank=True, null=True)    
-    branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
 
     def __str__(self):
         label = "ACTIVE" if self.is_active else "INACTIVE"
-        return f"{self.branch_id}-{label}"
+        return f"{self.branch}-{label}"
 
 class Mobile(models.Model):
     mac_address = models.CharField(max_length=100, blank=False, null=False)
-    branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
     is_active = models.BooleanField(default=True, blank=False, null=False)
     
     def __str__(self):
         label = "ACTIVE" if self.is_active else "INACTIVE"
-        return f"{self.branch_id}-{self.mac_address}-{label}"
+        return f"{self.branch}-{self.mac_address}-{label}"
     
 class Queue(models.Model):
     branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
@@ -94,12 +94,14 @@ class Queue(models.Model):
         return f"{self.window}"
 
 class MarkQueue(models.Model):
-    branch_id = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
+    branch = models.ForeignKey(Branch, on_delete=models.CASCADE, blank=False, null=False)
     text = models.CharField(max_length=200, blank=False, null=False)  
     
     def __str__(self):
         branch_name = Branch.objects.get(pk=self.branch_id_id).name
         return f"{branch_name}-{self.text}"
+
+# ---------------------- RECEIVER ---------------------- #
 
 @receiver([post_save, post_delete], sender=Queue)
 def ws_push_waiting_queues(sender, instance, **kwargs):
@@ -158,7 +160,7 @@ def ws_push_controller_queues(sender, instance, **kwargs):
     )
 
 @receiver([post_save, post_delete], sender=Queue)
-def ws_push_caleed_queue(sender, instance, **kwargs):
+def ws_push_called_queue(sender, instance, **kwargs):
     branch = instance.branch
     name = instance.name
     queue_code = instance.code

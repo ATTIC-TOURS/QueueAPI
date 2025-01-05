@@ -15,14 +15,14 @@ def mobile(request, format=None):
         # if the mobile already exists
         if mobile:
             partial_data = {
-                "branch_id": request.data["branch_id"],
+                "branch": request.data["branch_id"],
                 "is_active": True
             }
             serializer = MobileSerializer(mobile, data=partial_data, partial=True)
         else:
             complete_data = {
                 "mac_address": request.data["mac_address"],
-                "branch_id": request.data["branch_id"],
+                "branch": request.data["branch_id"],
                 "is_active": True
             }
             serializer = MobileSerializer(data=complete_data)

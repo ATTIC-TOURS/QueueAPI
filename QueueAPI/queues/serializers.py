@@ -21,7 +21,7 @@ class CategorySerializer(serializers.Serializer):
 class ServiceTypeSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=True, max_length=50)
-    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
     
     def create(self, validated_data):
         return ServiceType.objects.create(**validated_data)
@@ -35,8 +35,8 @@ class ServiceTypeSerializer(serializers.Serializer):
 class ServiceSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     name = serializers.CharField(required=True, max_length=50)
-    category_id = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
-    service_type_id = serializers.PrimaryKeyRelatedField(queryset=ServiceType.objects.all(), required=False)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
+    service_type = serializers.PrimaryKeyRelatedField(queryset=ServiceType.objects.all(), required=False)
     
     def create(self, validated_data):
         return Service.objects.create(**validated_data)
@@ -133,7 +133,7 @@ class QueueSerializer(serializers.Serializer):
 class MobileSerializer(serializers.Serializer):
     id = serializers.IntegerField(read_only=True)
     mac_address = serializers.CharField(max_length=100)
-    branch_id = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
+    branch = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
     is_active = serializers.BooleanField()
 
     def create(self, validated_data):
@@ -152,7 +152,7 @@ class PrinterSerializer(serializers.Serializer):
     mac_address = serializers.CharField(max_length=100)
     is_active = serializers.BooleanField()
     error_msg = serializers.CharField(max_length=200, required=False)    
-    branch_id = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
+    branch = serializers.PrimaryKeyRelatedField(queryset=Branch.objects.all(), required=True)
 
     def create(self, validated_data):
         return Printer.objects.create(**validated_data)
@@ -161,7 +161,7 @@ class PrinterSerializer(serializers.Serializer):
         instance.mac_address = validated_data.get("mac_address", instance.mac_address)
         instance.is_active = validated_data.get("is_active", instance.is_active)
         instance.error_msg = validated_data.get("error_msg", instance.error_msg)
-        instance.branch_id = validated_data.get("branch_id", instance.branch_id)
+        instance.branch_id = validated_data.get("branch", instance.branch)
         instance.save()
         return instance
 

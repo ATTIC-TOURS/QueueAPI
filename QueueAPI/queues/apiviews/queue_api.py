@@ -127,7 +127,7 @@ def queue_update(request, branch_id, format=None):
 
 def generate_queue_code(service_id, queue_no):
     service = Service.objects.get(id=service_id)
-    category = Category.objects.get(id=service.category_id_id)
+    category = Category.objects.get(id=service.category_id)
     return category.name[0].upper() + str(queue_no)
 
 def mobile_queue_status(serializedData):
@@ -152,7 +152,7 @@ def mobile_queue_status(serializedData):
         
 def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_pwd): 
     service = Service.objects.get(id=service_id)
-    category_id = Category.objects.get(id=service.category_id_id).id
+    category_id = Category.objects.get(id=service.category_id).id
     if email:
     
         return {
@@ -225,7 +225,7 @@ def queue_detail(request, branch_id, queue_id, format=None):
 def no_queue_waiting_status(request, branch_id, service_id, format=None):
     
     service = Service.objects.get(id=service_id)
-    category = Category.objects.get(id=service.category_id_id)
+    category = Category.objects.get(id=service.category_id)
     
     # Get a timezone-aware datetime for the start of today
     start_of_today = timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0)

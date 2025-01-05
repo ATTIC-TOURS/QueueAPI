@@ -17,14 +17,14 @@ def printer(request, branch_id, format=None):
         if printer:
             printer_data = {
                 "is_active": True,
-                "branch_id": branch_id
+                "branch": branch_id
             }
             serializer = PrinterSerializer(printer, data=printer_data, partial=True)
         else:
             new_printer_data = {
                 "mac_address": request.data["mac_address"],
                 "is_active": True,
-                "branch_id": branch_id
+                "branch": branch_id
             }
             serializer = PrinterSerializer(data=new_printer_data)
         if serializer.is_valid():

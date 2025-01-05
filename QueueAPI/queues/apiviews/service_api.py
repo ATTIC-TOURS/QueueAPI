@@ -41,14 +41,10 @@ def service_detail(request, pk, format=None):
 @api_view(["GET"])
 def service_by_category(request, category_id, format=None):
     try:
-        services = Service.objects.filter(category_id_id=category_id)
+        services = Service.objects.filter(category_id=category_id)
     except Service.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == "GET":
         serializer = ServiceSerializer(services, many=True)
         return Response(serializer.data)
-
-
-# mobile test case
-# http GET http://127.0.0.1:8000/services/

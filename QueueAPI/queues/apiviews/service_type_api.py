@@ -15,7 +15,7 @@ def service_type_list(request, format=None):
 @api_view(["GET"])
 def service_type_detail_by_category(request, category_id, format=None):
     try:
-        service_types = ServiceType.objects.filter(category_id_id=category_id)
+        service_types = ServiceType.objects.filter(category_id=category_id)
     except ServiceType.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
