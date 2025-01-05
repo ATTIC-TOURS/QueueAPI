@@ -53,7 +53,9 @@ class QueueConsumer(AsyncWebsocketConsumer):
     async def update_queues(self, event):
         branch_id = event["branch_id"]
         queue_status = event["queue_status"]
-        if queue_status == "waiting":
+        
+        
+        if queue_status == "waiting": # unused
             queues = await self.get_waiting_queues(branch_id)
             await self.send(text_data=json.dumps(queues))
         elif queue_status == "in-progress":
@@ -77,7 +79,9 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         queueSerializer = QueueSerializer(queues, many=True) 
         return queueSerializer.data   
-        
+    
+    
+    # unused 
     @database_sync_to_async
     def get_waiting_queues(self , branch_id):
         from queues.models import Queue, Status
