@@ -124,4 +124,4 @@ class QueueConsumer(AsyncWebsocketConsumer):
             queue_status = queue.status_id.name
             statuses[queue_status] += 1
         statuses["finish"] = statuses["pending"] + statuses["complete"]
-        return statusess
+        return statuses
