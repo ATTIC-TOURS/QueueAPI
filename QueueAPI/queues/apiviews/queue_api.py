@@ -9,6 +9,51 @@ from channels.layers import get_channel_layer
 from queues import email
 
 
+@api_view(["GET"])
+def tv_now_serving(request, branch_id, format=None):
+    if request.method == "GET":
+        queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="in-progress").id,
+            created_at__gte=timezone.now()
+        )
+        queueSerializer = QueueSerializer(queues, many=True) 
+        return Response(queueSerializer.data, status.HTTP_200_OK)
+    return Response(status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def controller_queues(request, branch_id, format=None):
+    if request.method == "GET":
+        waiting_queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="waiting").id,
+            created_at__gte=timezone.now()
+        )
+        in_progress_queues = Queue.objects.filter(
+            branch_id=branch_id,
+            status_id=Status.objects.get(name="in-progress").id,
+            created_at__gte=timezone.now()
+        )
+        queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
+        return Response(queueSerializer.data, status.HTTP_200_OK)
+    return Response(status.HTTP_400_BAD_REQUEST)
+
+@api_view(["GET"])
+def current_queue_stats(request, branch_id, format=None):
+    if request.method == "GET":
+        statuses = Status.objects.all()
+        statuses = {status.name: 0 for status in statuses}
+        queues = Queue.objects.filter(
+            branch_id=branch_id,
+            created_at__gte=timezone.now()
+        )
+        for queue in queues:
+            queue_status = queue.status_id.name
+            statuses[queue_status] += 1
+        statuses["finish"] = statuses["pending"] + statuses["complete"]
+        return Response(statuses, status.HTTP_200_OK)
+    return Response(status.HTTP_400_BAD_REQUEST)
+
 @api_view(["PATCH"])
 def queue_call(request, branch_id, queue_id, format=None):
     # request.data -> queue_id, window_id
