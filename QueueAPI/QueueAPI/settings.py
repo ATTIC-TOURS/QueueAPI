@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "queues",
     "corsheaders",
-    "channels",
+    "channels", # Asynchronous
 ]
 
 
@@ -58,14 +58,19 @@ MIDDLEWARE = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-CORS_ALLOWED_ORIGINS = [
-    "http://192.168.1.18:5173",
-    "http://localhost:5173",
-    "http://192.168.1.35:5173",
-    "http://192.168.1.13:5173",
-    "http://192.168.1.6:5173",
-    "http://192.168.1.42:5173"
-]
+
+CORS_ALLOWED_ORIGINS = [f"http://192.168.1.{i}:5173"
+                        for i in range(256)] + ["http://localhost:5173"]
+
+# CORS_ALLOWED_ORIGINS = [
+#     "http://192.168.1.18:5173",
+#     "http://localhost:5173",
+#     "http://192.168.1.35:5173",
+#     "http://192.168.1.13:5173",
+#     "http://192.168.1.6:5173",
+#     "http://192.168.1.42:5173",
+#     "http://192.168.1.15:5173",
+# ]
 
 CSRF_TRUSTED_ORIGINS = [
     'http://192.168.1.35:5173',  # Add your React app's origin here
