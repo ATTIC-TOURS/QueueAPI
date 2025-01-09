@@ -88,39 +88,6 @@ def queue_update(request, branch_id, format=None):
         }
         serializer = QueueSerializer(queue, data=updated_data, partial=True)
         if serializer.is_valid():
-            channel_layer = get_channel_layer()
-            async_to_sync(channel_layer.group_send)(
-                f"waiting-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "waiting"
-                }
-            )
-            async_to_sync(channel_layer.group_send)(
-                f"in-progress-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "in-progress"
-                }
-            )
-            async_to_sync(channel_layer.group_send)(
-                f"stats-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "stats"
-                }
-            )
-            async_to_sync(channel_layer.group_send)(
-                f"controller-queue-{branch_id}", 
-                {
-                    "type": "update_queues",
-                    "branch_id": branch_id,
-                    "queue_status": "controller"
-                }
-            )
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

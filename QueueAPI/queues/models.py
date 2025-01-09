@@ -111,7 +111,7 @@ def ws_push_waiting_queues(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)(
         f"waiting-queue-{branch.id}", 
         {
-            "type": "update_queues",
+            "type": "queues.update",
             "branch_id": branch.id,
             "queue_status": "waiting"
         }
@@ -125,7 +125,7 @@ def ws_push_now_serving_queues(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)(
         f"in-progress-queue-{branch.id}", 
         {
-            "type": "update_queues",
+            "type": "queues.update",
             "branch_id": branch.id,
             "queue_status": "in-progress"
         }
@@ -139,7 +139,7 @@ def ws_push_current_stats(sender, instance, **kwargs):
     async_to_sync(channel_layer.group_send)(
         f"stats-queue-{branch.id}", 
         {
-            "type": "update_queues",
+            "type": "queues.update",
             "branch_id": branch.id,
             "queue_status": "stats"
         }
@@ -147,34 +147,39 @@ def ws_push_current_stats(sender, instance, **kwargs):
 
 @receiver([post_save, post_delete], sender=Queue)
 def ws_push_controller_queues(sender, instance, **kwargs):
+    print("ws_push_controller_queues called!")
     branch = instance.branch
     
     channel_layer = get_channel_layer()
     async_to_sync(channel_layer.group_send)(
         f"controller-queue-{branch.id}", 
         {
-            "type": "update_queues",
+            "type": "queues.update",
             "branch_id": branch.id,
             "queue_status": "controller"
         }
     )
 
-@receiver([post_save, post_delete], sender=Queue)
+@receiver([post_save], sender=Queue)
 def ws_push_called_queue(sender, instance, **kwargs):
     branch = instance.branch
     name = instance.name
     queue_code = instance.code
     
-    if instance.window:
+    if instance.is_called:
         window = Window.objects.get(id=instance.window_id)
         
         channel_layer = get_channel_layer()
         async_to_sync(channel_layer.group_send)(
             f"call-queue-{branch.id}", 
             {
-                "type": "update_call_applicant",
+                "type": "queue.call",
                 "name": name,
                 "window_name": window.name,
                 "queue_code": queue_code
             }
         )
+        
+        queue = Queue.objects.get(id=instance.id)
+        queue.is_called = False
+        queue.save()
