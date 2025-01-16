@@ -6,14 +6,11 @@ class ServiceAdmin(admin.ModelAdmin):
     list_display = ["category_id", "name", "service_type_id"]
     list_filter = ["category_id", "service_type_id"]
         
-
 class QueueAdmin(admin.ModelAdmin):
-    list_filter = ["branch_id", "created_at"]
-
+    list_filter = ["branch", "created_at"]
 
 class MarkQueueAdmin(admin.ModelAdmin):
     list_filter = ["branch_id"]
-
 
 admin.site.register(Category)
 admin.site.register(Service, ServiceAdmin)

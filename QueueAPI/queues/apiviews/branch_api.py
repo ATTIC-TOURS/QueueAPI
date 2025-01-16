@@ -5,29 +5,25 @@ from queues.models import Branch
 from queues.serializers import BranchSerializer
 
 
-GET = "GET"
-POST = "POST"
-
-@api_view([GET])
+@api_view(["GET"])
 def branch_list(request, format=None):
-    if request.method == GET:
+    if request.method == "GET":
         branches = Branch.objects.all()
-        serializer = BranchSerializer(branches, many=True)
-        return Response(serializer.data)
+        branchSerializer = BranchSerializer(branches, many=True)
+        return Response(branchSerializer.data)
 
-@api_view([POST])
+@api_view(["POST"])
 def branch_login(request, branch_id, format=None):
-    
-    password_entered = request.data["password"]
+    password = request.data["password"]
     
     try:
         branch = Branch.objects.get(pk=branch_id)
     except Branch.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
-    if request.method == POST:
+    if request.method == "POST":
         return Response(
             {
-                "status": password_entered == branch.password
+                "status": password == branch.password
             }
         )

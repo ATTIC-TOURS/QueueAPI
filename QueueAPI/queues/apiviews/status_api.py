@@ -13,7 +13,3 @@ def viewable_status(request, format=None):
             viewable_statuses.append(status)
         serializer = StatusSerializer(viewable_statuses, many=True)
         return Response(serializer.data)
-
-
-# test case
-# http GET http://127.0.0.1:8000/viewable_status/
