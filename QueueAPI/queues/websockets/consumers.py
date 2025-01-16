@@ -60,11 +60,11 @@ class QueueConsumer(AsyncWebsocketConsumer):
         elif queue_status == "controller":
             queues = await self.get_controller_queues()
         elif self.queue_status == "stats":
-            queues = await self.get_queue_stats(self.room_name)
+            queues = await self.get_queue_stats()
             
         await self.send(text_data=json.dumps(queues))
     
-    def get_starting_of_current_manila_timezone():
+    def get_starting_of_current_manila_timezone(self):
         year = timezone.now().now().year
         month = timezone.now().now().month
         day = timezone.now().now().day
@@ -78,7 +78,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(queues, many=True) 
         return queueSerializer.data   
@@ -91,7 +91,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(queues, many=True) 
         return queueSerializer.data
@@ -103,12 +103,12 @@ class QueueConsumer(AsyncWebsocketConsumer):
         waiting_queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         in_progress_queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
         return queueSerializer.data
@@ -120,7 +120,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         statuses = {status.name: 0 for status in statuses}
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         for queue in queues:
             queue_status = queue.status.name
