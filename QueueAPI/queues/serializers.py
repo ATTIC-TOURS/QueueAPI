@@ -97,7 +97,7 @@ class QueueSerializer(serializers.Serializer):
     is_called = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%dT%H:%M:%S%z")
     updated_at = serializers.DateTimeField(required=False, format="%Y-%m-%dT%H:%M:%S%z", allow_null=True)
-    code = serializers.CharField(max_length=10)
+    code = serializers.CharField(max_length=50)
     name = serializers.CharField(max_length=50)
     email = serializers.CharField(max_length=100, required=False)
     is_senior_pwd  = serializers.BooleanField(required=True)

@@ -92,10 +92,13 @@ def queue_update(request, branch_id, format=None):
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-def generate_queue_code(service_id, queue_no):
+def generate_queue_code(service_id, queue_no, is_senior_pwd):
     service = Service.objects.get(id=service_id)
     category = Category.objects.get(id=service.category_id)
-    return category.name[0].upper() + str(queue_no)
+    code = category.name[0].upper() + str(queue_no)
+    if is_senior_pwd:
+        return code + " (Senior/PWD)"
+    return code
 
 def mobile_queue_status(serializedData):
     branch = Branch.objects.get(id=serializedData["branch"])
@@ -129,7 +132,7 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_p
             "queue_no": queue_no,
             "status": Status.objects.get(name="waiting").id,
             "is_called": False,
-            "code": generate_queue_code(service_id, queue_no),
+            "code": generate_queue_code(service_id, queue_no, is_senior_pwd),
             "name": name,
             "email": email,
             "is_senior_pwd": is_senior_pwd
@@ -142,7 +145,7 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_p
             "queue_no": queue_no,
             "status": Status.objects.get(name="waiting").id,
             "is_called": False,
-            "code": generate_queue_code(service_id, queue_no),
+            "code": generate_queue_code(service_id, queue_no, is_senior_pwd),
             "name": name,
             "is_senior_pwd": is_senior_pwd
         }
@@ -156,7 +159,6 @@ def queue(request, branch_id, service_id, format=None):
     
     if request.method == "POST":
         new_queue = generate_new_queue(branch_id, service_id, r_queue_no, r_name, r_email, r_is_senior_pwd)
-            
         queueSerializer = QueueSerializer(data=new_queue)
         if queueSerializer.is_valid():
             new_queue = queueSerializer.save()
