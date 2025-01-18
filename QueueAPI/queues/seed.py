@@ -3,7 +3,7 @@ branches = [
     {"name": "SM Mall of Asia", "password": "1234"},
     {"name": "SM Megamall", "password": "1234"},
     {"name": "SM North Edsa", "password": "1234"},
-    {"name": "SM Fairview", "password": "1234"},
+    {"name": "SM Fairview", "password": "arviepogi"},
     {"name": "SM Southmall", "password": "1234"},
     {"name": "SM Clark", "password": "1234"},
     {"name": "SM Cebu", "password": "1234"},
@@ -15,18 +15,18 @@ categories = [
     {"name": "Korea Visa", "display_name": "Apply for Korea Visa"},
     {"name": "Ticket", "display_name": "Ticket"},
     {"name": "Claim Passport", "display_name": "Claim Passport"},
-    {"name": "Visa Consultation", "display_name": "Visa Consultation"},
-    {"name": "Add ons", "display_name": "Add ons"},
-    {"name": "Others", "display_name": "Others"}
+    # {"name": "Visa Consultation", "display_name": "Visa Consultation"},
+    # {"name": "Add ons", "display_name": "Add ons"},
+    # {"name": "Others", "display_name": "Others"}
 ]
 
 JAPAN_VISA_ID = 1
 KOREA_VISA_ID = 2
 TICKET_ID = 3
 CLAIM_PASSPORT_ID = 4
-VISA_CONSULTATION_ID = 5
-ADD_ONS_ID = 6
-OTHERS_ID = 7
+# VISA_CONSULTATION_ID = 5
+# ADD_ONS_ID = 6
+# OTHERS_ID = 7
 
 service_types = [
     {"name": "Temporary Visitor", "category_id": JAPAN_VISA_ID},
@@ -64,13 +64,13 @@ services = [
     
     {"name": "Filipino Parent travelling to Japan with JFC", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID},
     {"name": "Claim Passport", "category_id": CLAIM_PASSPORT_ID, "service_type_id": None},
-    {"name": "Visa Consultation", "category_id": VISA_CONSULTATION_ID, "service_type_id": None},
-    {"name": "Take Photograph", "category_id": ADD_ONS_ID, "service_type_id": None},
-    {"name": "Photocopy Documents", "category_id": ADD_ONS_ID, "service_type_id": None},
-    {"name": "Print Documents", "category_id": ADD_ONS_ID, "service_type_id": None},
-    {"name": "Receive Passport via LBC", "category_id": ADD_ONS_ID, "service_type_id": None},
-    {"name": "Drop-off Application", "category_id": OTHERS_ID, "service_type_id": None},
-    {"name": "Submit Add Docs", "category_id": OTHERS_ID, "service_type_id": None}
+    # {"name": "Visa Consultation", "category_id": VISA_CONSULTATION_ID, "service_type_id": None},
+    # {"name": "Take Photograph", "category_id": ADD_ONS_ID, "service_type_id": None},
+    # {"name": "Photocopy Documents", "category_id": ADD_ONS_ID, "service_type_id": None},
+    # {"name": "Print Documents", "category_id": ADD_ONS_ID, "service_type_id": None},
+    # {"name": "Receive Passport via LBC", "category_id": ADD_ONS_ID, "service_type_id": None},
+    # {"name": "Drop-off Application", "category_id": OTHERS_ID, "service_type_id": None},
+    # {"name": "Submit Add Docs", "category_id": OTHERS_ID, "service_type_id": None}
 ]
 
 windows = [
@@ -106,6 +106,8 @@ mark_queues = [
     {"branch_id": 4, "text": "Please issue a queue and wait for to be called!"},
     {"branch_id": 5, "text": "Welcome to Attic Tours!"},
     {"branch_id": 5, "text": "Please issue a queue and wait for to be called!"},
+    {"branch_id": 5, "text": "Your turn might be skipped for assessing applications for Senior/PWD"},
+    {"branch_id": 5, "text": "Due to the rapid increase in the number of visitors from the Philippines, examination of visa applications for tourism purposes, may take several weeks longer than the standard processing time. Therefore, we highly recommend for applicants to please apply at least two months prior to the date of travel."},
     {"branch_id": 6, "text": "Welcome to Attic Tours!"},
     {"branch_id": 6, "text": "Please issue a queue and wait for to be called!"},
     {"branch_id": 7, "text": "Welcome to Attic Tours!"},
