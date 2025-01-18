@@ -104,6 +104,9 @@ def mobile_queue_status(serializedData):
     branch = Branch.objects.get(id=serializedData["branch"])
     category = Category.objects.get(id=serializedData["category"])
     service = Service.objects.get(id=serializedData["service"])
+    
+    code = serializedData["code"].split()[0]
+
     data_for_mobile = {
         "id": serializedData["id"],
         "branch_name": branch.name,
@@ -112,7 +115,7 @@ def mobile_queue_status(serializedData):
         "queue_no": serializedData["queue_no"],
         "status_id": serializedData["status"],
         "is_called": serializedData["is_called"],
-        "code": serializedData["code"],
+        "code": code,
         "name": serializedData["name"]
     }
     if "email" not in serializedData:
