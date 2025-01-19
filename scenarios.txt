@@ -30,6 +30,12 @@ http POST http://127.0.0.1:8000/printer/1/ mac_address=123.123.123.123
 (parameter->branch_id, service_id)
 http POST http://127.0.0.1:8000/queue-services/v1/queues/1/1 queue_no=900 name=yas is_senior_pwd=True (email=fadfs@daf.com) <- optional
 
+
+change pax in the controller
+http PATCH http://127.0.0.1:8000/queue-services/v1/queues/2 pax=4
+
+controller queues
+http GET http://127.0.0.1:8000/queue-services/v1/branches/1/controller-queues
 ---
 Web
 ---

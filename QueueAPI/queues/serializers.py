@@ -101,6 +101,7 @@ class QueueSerializer(serializers.Serializer):
     name = serializers.CharField(max_length=50)
     email = serializers.CharField(max_length=100, required=False)
     is_senior_pwd  = serializers.BooleanField(required=True)
+    pax = serializers.IntegerField(required=False)
     
     def to_representation(self, instance):
         """
@@ -126,6 +127,7 @@ class QueueSerializer(serializers.Serializer):
         instance.status = validated_data.get("status", instance.status)
         instance.is_called = validated_data.get("is_called", instance.is_called)
         instance.updated_at = validated_data.get("updated_at", instance.updated_at)
+        instance.pax = validated_data.get("pax", instance.pax)
         instance.save()
         return instance
     

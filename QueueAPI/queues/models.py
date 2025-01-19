@@ -85,6 +85,7 @@ class Queue(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     email = models.CharField(max_length=100, blank=True, null=True)
     is_senior_pwd = models.BooleanField(default=False, blank=False, null=False)
+    pax = models.PositiveIntegerField(default=0, blank=False, null=False)
     
     def __str__(self):
         return f"{self.branch.name}-{self.code}-{self.name}-{self.created_at}"
@@ -181,3 +182,15 @@ def ws_notify_called_queue(sender, instance, **kwargs):
         queue = Queue.objects.get(id=instance.id)
         queue.is_called = False
         queue.save()
+    
+@receiver([post_save], sender=Queue)
+def ws_notify_current_tourism_total(sender, instance, **kwargs):
+    branch = instance.branch
+    
+    channel_layer = get_channel_layer()
+    group_name = f"current-tourism-total-queue-{branch.id}"
+    event = {
+        "type": "queues.update",
+        "queue_status": "current-tourism-total"
+    }
+    async_to_sync(channel_layer.group_send)(group_name, event)

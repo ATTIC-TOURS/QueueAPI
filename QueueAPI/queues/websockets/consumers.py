@@ -28,6 +28,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
             queues = await self.get_queue_stats()
         elif self.queue_status == "call":
             queues = None
+        elif self.queue_status == "current-tourism-total":
+            queues = await self.get_tourism_total()
         if queues:
             await self.send(text_data=json.dumps(queues))
         
@@ -59,11 +61,13 @@ class QueueConsumer(AsyncWebsocketConsumer):
             queues = await self.get_in_progress_queues()
         elif queue_status == "controller":
             queues = await self.get_controller_queues()
-        elif self.queue_status == "stats":
+        elif queue_status == "stats":
             queues = await self.get_queue_stats()
+        elif queue_status == "current-tourism-total":
+            queues = await self.get_tourism_total()
             
         await self.send(text_data=json.dumps(queues))
-    
+        
     def get_starting_of_current_manila_timezone(self):
         year = timezone.now().now().year
         month = timezone.now().now().month
@@ -127,3 +131,24 @@ class QueueConsumer(AsyncWebsocketConsumer):
             statuses[queue_status] += 1
         statuses["finish"] = statuses["pending"] + statuses["complete"]
         return statuses
+    
+    @database_sync_to_async
+    def get_tourism_total(self):
+        
+        from queues.models import Queue, Status, Service
+        queues = Queue.objects.all()
+        
+        status_id = Status.objects.get(name="complete").id
+        service_id = Service.objects.get(name="Tourism").id
+        queues_tourism = Queue.objects.filter(
+            branch_id=self.branch_id,
+            service_id=service_id,
+            status_id=status_id,
+            created_at__gte=self.get_starting_of_current_manila_timezone()
+        )
+        
+        tourism_total = 0
+        for queue in queues_tourism:
+            tourism_total += queue.pax
+            
+        return {"total": tourism_total}

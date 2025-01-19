@@ -7,7 +7,15 @@ from django.utils import timezone
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 from queues import email
+import datetime
 
+
+def get_starting_of_current_manila_timezone():
+        year = timezone.now().now().year
+        month = timezone.now().now().month
+        day = timezone.now().now().day
+        aware_dt = datetime.datetime(year, month, day-1, 16, tzinfo=datetime.timezone.utc)
+        return aware_dt
 
 @api_view(["GET"])
 def tv_now_serving(request, branch_id, format=None):
@@ -15,11 +23,13 @@ def tv_now_serving(request, branch_id, format=None):
         queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=timezone.now()
+            created_at__gte=get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(queues, many=True) 
         return Response(queueSerializer.data, status.HTTP_200_OK)
     return Response(status.HTTP_400_BAD_REQUEST)
+
+
 
 @api_view(["GET"])
 def controller_queues(request, branch_id, format=None):
@@ -27,12 +37,12 @@ def controller_queues(request, branch_id, format=None):
         waiting_queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=timezone.now()
+            created_at__gte=get_starting_of_current_manila_timezone()
         )
         in_progress_queues = Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="in-progress").id,
-            created_at__gte=timezone.now()
+            created_at__gte=get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
         return Response(queueSerializer.data, status.HTTP_200_OK)
@@ -45,7 +55,7 @@ def current_queue_stats(request, branch_id, format=None):
         statuses = {status.name: 0 for status in statuses}
         queues = Queue.objects.filter(
             branch_id=branch_id,
-            created_at__gte=timezone.now()
+            created_at__gte=get_starting_of_current_manila_timezone()
         )
         for queue in queues:
             queue_status = queue.status_id.name
@@ -180,6 +190,21 @@ def queue(request, branch_id, service_id, format=None):
                     mobile_queue_status(queueSerializer.data), 
                     status=status.HTTP_201_CREATED
                 )
+        return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(["PATCH"])
+def queue_pax(request, queue_id, format=None):
+    try:
+        queue = Queue.objects.get(pk=queue_id)
+    except Queue.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+    
+    if request.method == "PATCH":
+        queueSerializer = QueueSerializer(queue, data={"pax": request.data["pax"]}, partial=True)
+        if queueSerializer.is_valid():
+            queueSerializer.save()
+            return Response(status=status.HTTP_200_OK)
         return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 @api_view(["DELETE"])
