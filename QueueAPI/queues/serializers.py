@@ -37,12 +37,16 @@ class ServiceSerializer(serializers.Serializer):
     name = serializers.CharField(required=True, max_length=50)
     category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=True)
     service_type = serializers.PrimaryKeyRelatedField(queryset=ServiceType.objects.all(), required=False)
+    notes = serializers.CharField(required=False, max_length=100)
+    is_cut_off = serializers.BooleanField()
     
     def create(self, validated_data):
         return Service.objects.create(**validated_data)
     
     def update(self, instance, validated_data):
         instance.name = validated_data.get("name", instance.name)
+        instance.name = validated_data.get("notes", instance.notes)
+        instance.name = validated_data.get("name", instance.is_cut_off)
         instance.save()
         return instance
 

@@ -17,6 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
+
 urlpatterns = [
     path("queue-services/v1/", include("queues.urls.urls")),
     path("admin/", admin.site.urls),   

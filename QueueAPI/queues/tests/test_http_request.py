@@ -76,7 +76,7 @@ class HttpRequestTest(APITestCase):
         BRANCH_ID = 1
         SERVICE_ID = 1
         url = f"/queue-services/v1/queues/{BRANCH_ID}/{SERVICE_ID}"
-        body =  {"queue_no": 1, "name": "cat", "is_senior_pwd": False}
+        body =  {"queue_no": 1, "name": "cat", "is_senior_pwd": False, "pax": 12}
         response = self.client.post(url, body)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
     

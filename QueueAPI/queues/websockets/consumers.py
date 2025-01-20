@@ -17,6 +17,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         
+        
+        queues = None
         # sends these data first time connected
         if self.queue_status == "waiting":
             queues = await self.get_waiting_queues() 
@@ -28,8 +30,9 @@ class QueueConsumer(AsyncWebsocketConsumer):
             queues = await self.get_queue_stats()
         elif self.queue_status == "call":
             queues = None
-        elif self.queue_status == "current-tourism-total":
-            queues = await self.get_tourism_total()
+        elif self.queue_status == "current-tourism-stat":
+            queues = await self.get_tourism_stat()
+
         if queues:
             await self.send(text_data=json.dumps(queues))
         
@@ -63,8 +66,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
             queues = await self.get_controller_queues()
         elif queue_status == "stats":
             queues = await self.get_queue_stats()
-        elif queue_status == "current-tourism-total":
-            queues = await self.get_tourism_total()
+        elif queue_status == "current-tourism-stat":
+            queues = await self.get_tourism_stat()
             
         await self.send(text_data=json.dumps(queues))
         
@@ -133,22 +136,52 @@ class QueueConsumer(AsyncWebsocketConsumer):
         return statuses
     
     @database_sync_to_async
-    def get_tourism_total(self):
+    def get_tourism_stat(self):
         
         from queues.models import Queue, Status, Service
         queues = Queue.objects.all()
         
-        status_id = Status.objects.get(name="complete").id
         service_id = Service.objects.get(name="Tourism").id
-        queues_tourism = Queue.objects.filter(
+        
+        complete_status_id = Status.objects.get(name="complete").id
+        queues_complete_tourism = Queue.objects.filter(
             branch_id=self.branch_id,
             service_id=service_id,
-            status_id=status_id,
+            status_id=complete_status_id,
             created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         
-        tourism_total = 0
-        for queue in queues_tourism:
-            tourism_total += queue.pax
+        complete_tourism_total = 0
+        for queue in queues_complete_tourism:
+            complete_tourism_total += queue.pax
             
-        return {"total": tourism_total}
+        now_serving_status_id = Status.objects.get(name="in-progress").id
+        queues_now_serving_tourism = Queue.objects.filter(
+            branch_id=self.branch_id,
+            service_id=service_id,
+            status_id=now_serving_status_id,
+            created_at__gte=self.get_starting_of_current_manila_timezone()
+        )
+        
+        now_serving_tourism_total = 0
+        for queue in queues_now_serving_tourism:
+            now_serving_tourism_total += queue.pax
+            
+        waiting_status_id = Status.objects.get(name="waiting").id
+        queues_waiting_tourism = Queue.objects.filter(
+            branch_id=self.branch_id,
+            service_id=service_id,
+            status_id=waiting_status_id,
+            created_at__gte=self.get_starting_of_current_manila_timezone()
+        )
+        
+        waiting_tourism_total = 0
+        for queue in queues_waiting_tourism:
+            waiting_tourism_total += queue.pax
+            
+        return {
+            "complete": complete_tourism_total,
+            "now-serving": now_serving_tourism_total,
+            "waiting": waiting_tourism_total,
+            "total": complete_tourism_total + now_serving_tourism_total + waiting_tourism_total
+        }

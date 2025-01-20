@@ -72,9 +72,9 @@ CORS_ALLOWED_ORIGINS = [f"http://192.168.1.{i}:5173"
 #     "http://192.168.1.15:5173",
 # ]
 
-CSRF_TRUSTED_ORIGINS = [
-    'http://192.168.1.35:5173',  # Add your React app's origin here
-]
+CSRF_TRUSTED_ORIGINS = [f"http://192.168.1.{i}:5173"
+                        for i in range(256)] + ["http://localhost:5173"]
+
 
 CSRF_COOKIE_HTTPONLY = False  # Allow JS to read the CSRF cookie
 CSRF_COOKIE_SECURE = False  # Set this to True in production with HTTPS

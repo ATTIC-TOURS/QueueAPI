@@ -39,7 +39,7 @@ MULTIPLE_ENTRY_ID = 2
 LONG_TERM_STAY_ID = 3
 
 services = [
-    {"name": "Tourism", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID, "notes": "only March 15 onwards accepted & (60pax/day)", "cut-off": False},
+    {"name": "Tourism", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID, "notes": "Tourist Visa is only March 15 onwards accepted & (60pax/day)", "cut-off": False},
     {"name": "Package Tour", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID, "notes": None, "cut-off": False},
     {"name": "Business, Conference, Cultural Exchange", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID, "notes": None, "cut-off": False},
     {"name": "Visiting Relatives", "category_id": JAPAN_VISA_ID, "service_type_id": TEMPORARY_VISITOR_ID, "notes": None, "cut-off": False},
@@ -62,8 +62,8 @@ services = [
     {"name": "Domestic", "category_id": TICKET_ID, "service_type_id": None, "notes": None, "cut-off": False},
     
     
-    {"name": "Filipino Parent travelling to Japan with JFC", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID},
-    {"name": "Claim Passport", "category_id": CLAIM_PASSPORT_ID, "service_type_id": None},
+    {"name": "Filipino Parent travelling to Japan with JFC", "category_id": JAPAN_VISA_ID, "service_type_id": LONG_TERM_STAY_ID, "notes": None, "cut-off": False},
+    {"name": "Claim Passport", "category_id": CLAIM_PASSPORT_ID, "service_type_id": None, "notes": None, "cut-off": False},
     # {"name": "Visa Consultation", "category_id": VISA_CONSULTATION_ID, "service_type_id": None},
     # {"name": "Take Photograph", "category_id": ADD_ONS_ID, "service_type_id": None},
     # {"name": "Photocopy Documents", "category_id": ADD_ONS_ID, "service_type_id": None},
@@ -143,15 +143,17 @@ def create_default_data(apps, schema_editor):
     for service_type in service_types:
         ServiceType.objects.create(
             name=service_type["name"],
-            category_id_id=service_type["category_id"],
+            category_id=service_type["category_id"],
         )
     
     Service = apps.get_model("queues", "Service")
     for service in services:
         Service.objects.create(
             name=service["name"],
-            category_id_id=service["category_id"],
-            service_type_id_id=service["service_type_id"]
+            category_id=service["category_id"],
+            service_type_id=service["service_type_id"],
+            notes=service["notes"],
+            is_cut_off=service["cut-off"]
         )
     
     Window = apps.get_model("queues", "Window")
@@ -169,7 +171,7 @@ def create_default_data(apps, schema_editor):
     MarkQueue = apps.get_model("queues", "MarkQueue")
     for mark_queue in mark_queues:
         MarkQueue.objects.create(
-            branch_id=Branch.objects.get(id=mark_queue["branch_id"]),
+            branch=Branch.objects.get(id=mark_queue["branch_id"]),
             text=mark_queue["text"]
         )
 

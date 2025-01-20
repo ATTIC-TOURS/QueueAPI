@@ -99,6 +99,28 @@ def queue_update(request, branch_id, format=None):
         serializer = QueueSerializer(queue, data=updated_data, partial=True)
         if serializer.is_valid():
             serializer.save()
+            
+            # --------- tourism limit check ------------------
+            service_id = Service.objects.get(name="Tourism").id
+            complete_status_id = Status.objects.get(name="complete").id
+            queues_complete_tourism = Queue.objects.filter(
+                branch_id=branch_id,
+                service_id=service_id,
+                status_id=complete_status_id,
+                created_at__gte=get_starting_of_current_manila_timezone()
+            )
+            complete_tourism_total = 0
+            for queue in queues_complete_tourism:
+                complete_tourism_total += queue.pax
+            
+            tourism_service = Service.objects.get(name="Tourism")
+            if complete_tourism_total >= 60:
+                tourism_service.is_cut_off = True 
+            else:
+                tourism_service.is_cut_off = False
+            tourism_service.save()
+            # ---------------------------
+                
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
@@ -133,7 +155,7 @@ def mobile_queue_status(serializedData):
     data_for_mobile["email"] = serializedData["email"]
     return data_for_mobile
         
-def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_pwd): 
+def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_pwd, pax): 
     service = Service.objects.get(id=service_id)
     category_id = Category.objects.get(id=service.category_id).id
     if email:
@@ -148,7 +170,8 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_p
             "code": generate_queue_code(service_id, queue_no, is_senior_pwd),
             "name": name,
             "email": email,
-            "is_senior_pwd": is_senior_pwd
+            "is_senior_pwd": is_senior_pwd,
+            "pax": pax
         }
         
     return {
@@ -160,7 +183,8 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_p
             "is_called": False,
             "code": generate_queue_code(service_id, queue_no, is_senior_pwd),
             "name": name,
-            "is_senior_pwd": is_senior_pwd
+            "is_senior_pwd": is_senior_pwd,
+            "pax": pax
         }
 
 @api_view(["POST"])
@@ -169,9 +193,10 @@ def queue(request, branch_id, service_id, format=None):
     r_name = request.data["name"]
     r_email = request.data["email"] if "email" in request.data else None
     r_is_senior_pwd = request.data["is_senior_pwd"]
+    r_pax = request.data["pax"]
     
     if request.method == "POST":
-        new_queue = generate_new_queue(branch_id, service_id, r_queue_no, r_name, r_email, r_is_senior_pwd)
+        new_queue = generate_new_queue(branch_id, service_id, r_queue_no, r_name, r_email, r_is_senior_pwd, r_pax)
         queueSerializer = QueueSerializer(data=new_queue)
         if queueSerializer.is_valid():
             new_queue = queueSerializer.save()

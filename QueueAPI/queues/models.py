@@ -23,6 +23,8 @@ class Service(models.Model):
     name = models.CharField(max_length=50, blank=False, null=False)
     category = models.ForeignKey(Category, on_delete=models.CASCADE, blank=False, null=False)
     service_type = models.ForeignKey(ServiceType, on_delete=models.CASCADE, blank=True, null=True)
+    notes = models.CharField(max_length=100, blank=True, null=True)
+    is_cut_off = models.BooleanField(default=False, blank=False, null=False)
     
     def __str__(self):
         return self.name
@@ -188,9 +190,9 @@ def ws_notify_current_tourism_total(sender, instance, **kwargs):
     branch = instance.branch
     
     channel_layer = get_channel_layer()
-    group_name = f"current-tourism-total-queue-{branch.id}"
+    group_name = f"current-tourism-stat-queue-{branch.id}"
     event = {
         "type": "queues.update",
-        "queue_status": "current-tourism-total"
+        "queue_status": "current-tourism-stat"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
