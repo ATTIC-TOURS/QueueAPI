@@ -14,6 +14,8 @@ pa website create --domain attictoursdeveloper.pythonanywhere.com --command '/ho
 
 pa website reload --domain attictoursdeveloper.pythonanywhere.com
 
+pa website delete --domain attictoursdeveloper.pythonanywhere.com
+
 
 **Reference**
 
