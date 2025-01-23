@@ -70,7 +70,7 @@ def queue_call(request, branch_id, queue_id, format=None):
             "window": request.data["window_id"],
             "status": Status.objects.filter(name="now-serving").values().first()["id"],
             "is_called": True,
-            "updated_at": timezone.now()
+            "called_at": timezone.now()
         }
         queueSerializer = QueueSerializer(queue, data=data, partial=True)
         if queueSerializer.is_valid():            
@@ -89,7 +89,8 @@ def queue_status_update(request, branch_id, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
     if request.method == "PATCH":
         updated_data = {
-            "status": request.data["status_id"]
+            "status": request.data["status_id"],
+            "updated_at": timezone.now()
         }
         serializer = QueueSerializer(queue, data=updated_data, partial=True)
         if serializer.is_valid():

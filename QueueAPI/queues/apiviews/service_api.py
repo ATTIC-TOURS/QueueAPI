@@ -38,10 +38,6 @@ def update_service_cut_off(branch_id, service_id):
 @api_view(["GET"])
 def service_list(request, branch_id, format=None):
     if request.method == "GET":
-        # --------------- IS CUT OFF (START)------------------------
-        tourism_id = Service.objects.get(branch_id=branch_id, name="Tourism").id
-        update_service_cut_off(branch_id, tourism_id)
-        # --------------- IS CUT OFF (END)--------------------------
         services = Service.objects.filter(branch_id=branch_id)
         serializer = ServiceSerializer(services, many=True)
         return Response(serializer.data)
@@ -65,5 +61,9 @@ def service_by_category(request, branch_id, category_id, format=None):
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == "GET":
+        # --------------- IS CUT OFF (START)------------------------
+        tourism_id = Service.objects.get(branch_id=branch_id, name="Tourism").id
+        update_service_cut_off(branch_id, tourism_id)
+        # --------------- IS CUT OFF (END)--------------------------
         serializer = ServiceSerializer(services, many=True)
         return Response(serializer.data)

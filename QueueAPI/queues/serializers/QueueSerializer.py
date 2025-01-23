@@ -14,6 +14,7 @@ class QueueSerializer(serializers.Serializer):
     is_called = serializers.BooleanField()
     created_at = serializers.DateTimeField(read_only=True, format="%Y-%m-%dT%H:%M:%S%z")
     updated_at = serializers.DateTimeField(required=False, format="%Y-%m-%dT%H:%M:%S%z", allow_null=True)
+    called_at = serializers.DateTimeField(required=False, format="%Y-%m-%dT%H:%M:%S%z", allow_null=True)
     code = serializers.CharField(max_length=50)
     name = serializers.CharField(max_length=50)
     email = serializers.CharField(max_length=100, required=False)
@@ -44,6 +45,7 @@ class QueueSerializer(serializers.Serializer):
         instance.status = validated_data.get("status", instance.status)
         instance.is_called = validated_data.get("is_called", instance.is_called)
         instance.updated_at = validated_data.get("updated_at", instance.updated_at)
+        instance.called_at = validated_data.get("called_at", instance.called_at)
         instance.pax = validated_data.get("pax", instance.pax)
         instance.save()
         return instance

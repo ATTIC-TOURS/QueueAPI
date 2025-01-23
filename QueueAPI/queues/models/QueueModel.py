@@ -45,11 +45,11 @@ def ws_notify_now_serving_queues(sender, instance, **kwargs):
     branch = instance.branch
     
     channel_layer = get_channel_layer()
-    group_name = f"in-progress-queue-{branch.id}"
+    group_name = f"now-serving-queue-{branch.id}"
     event = {
         "type": "queues.update",
         "branch_id": branch.id,
-        "queue_status": "in-progress"
+        "queue_status": "now-serving"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
     

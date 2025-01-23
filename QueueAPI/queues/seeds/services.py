@@ -2,7 +2,7 @@ from .constants import *
 
 
 services = [
-    {"name": "Tourism", "branch_id": FAIRVIEW_ID, "category_id": JAPAN_VISA_ID, "notes": "Tourist Visa is only March 21 onwards accepted & (60pax/day)", "cut-off": False},
+    {"name": "Tourism", "branch_id": FAIRVIEW_ID, "category_id": JAPAN_VISA_ID, "notes": "Tourist Visa is only March 21 onwards accepted & (60pax/day)", "cut-off": False, "quota": 60},
     # {"name": "Package Tour", "branch_id": FAIRVIEW_ID, "category_id": JAPAN_VISA_ID, "notes": None, "cut-off": False},
     {"name": "Business, Conference, Cultural Exchange", "branch_id": FAIRVIEW_ID, "category_id": JAPAN_VISA_ID, "notes": None, "cut-off": False},
     {"name": "Visiting Relatives", "branch_id": FAIRVIEW_ID, "category_id": JAPAN_VISA_ID, "notes": None, "cut-off": False},
@@ -46,5 +46,6 @@ def create_default_services(apps, schema_editor):
             category_id=service["category_id"],
             notes=service["notes"],
             is_cut_off=service["cut-off"],
-            branch_id=service["branch_id"]
+            branch_id=service["branch_id"],
+            quota=service.get("quota", None)
         )

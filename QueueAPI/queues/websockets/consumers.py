@@ -8,7 +8,7 @@ import datetime
 class QueueConsumer(AsyncWebsocketConsumer):
     
     async def connect(self):
-        self.queue_status = self.scope['url_route']['kwargs']['queue_status'] # queue_status -> waiting, in-progress, call
+        self.queue_status = self.scope['url_route']['kwargs']['queue_status'] # queue_status -> waiting, now-serving, call
         self.branch_id = self.scope['url_route']['kwargs']['branch_id']
         self.roomGroupName = f"{self.queue_status}-queue-{self.branch_id}"
         await self.channel_layer.group_add(
@@ -22,7 +22,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         # sends these data first time connected
         if self.queue_status == "waiting":
             queues = await self.get_waiting_queues() 
-        elif self.queue_status == "in-progress":
+        elif self.queue_status == "now-serving":
             queues = await self.get_in_progress_queues()
         elif self.queue_status == "controller":
             queues = await self.get_controller_queues()
@@ -60,7 +60,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
         if queue_status == "waiting": # unused
             queues = await self.get_waiting_queues()
-        elif queue_status == "in-progress":
+        elif queue_status == "now-serving":
             queues = await self.get_in_progress_queues()
         elif queue_status == "controller":
             queues = await self.get_controller_queues()
@@ -84,7 +84,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         from queues.serializers import QueueSerializer
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            status_id=Status.objects.get(name="in-progress").id,
+            status_id=Status.objects.get(name="now-serving").id,
             created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(queues, many=True) 
@@ -114,7 +114,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         in_progress_queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            status_id=Status.objects.get(name="in-progress").id,
+            status_id=Status.objects.get(name="now-serving").id,
             created_at__gte=self.get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
@@ -131,7 +131,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         for queue in queues:
             queue_status = queue.status.name
-            statuses[queue_status] += 1
+            statuses[queue_status] += queue.pax
         statuses["finish"] = statuses["pending"] + statuses["complete"]
         return statuses
     
@@ -139,9 +139,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
     def get_tourism_stat(self):
         
         from queues.models import Queue, Status, Service
-        queues = Queue.objects.all()
         
-        service_id = Service.objects.get(name="Tourism").id
+        service_id = Service.objects.get(branch_id=self.branch_id, name="Tourism").id
         
         complete_status_id = Status.objects.get(name="complete").id
         queues_complete_tourism = Queue.objects.filter(
@@ -155,7 +154,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         for queue in queues_complete_tourism:
             complete_tourism_total += queue.pax
             
-        now_serving_status_id = Status.objects.get(name="in-progress").id
+        now_serving_status_id = Status.objects.get(name="now-serving").id
         queues_now_serving_tourism = Queue.objects.filter(
             branch_id=self.branch_id,
             service_id=service_id,
@@ -178,10 +177,13 @@ class QueueConsumer(AsyncWebsocketConsumer):
         waiting_tourism_total = 0
         for queue in queues_waiting_tourism:
             waiting_tourism_total += queue.pax
+        
+        quota = Service.objects.get(branch_id=self.branch_id, name="Tourism").quota
             
         return {
             "complete": complete_tourism_total,
             "now-serving": now_serving_tourism_total,
             "waiting": waiting_tourism_total,
-            "total": complete_tourism_total + now_serving_tourism_total + waiting_tourism_total
+            "total": complete_tourism_total + now_serving_tourism_total + waiting_tourism_total,
+            "quota": quota
         }
