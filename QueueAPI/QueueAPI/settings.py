@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-e4&cbh_m^*9+bfn^k3yocles&-&n@j80(%s5afjpn$xv#hs%=s"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*"]
 
@@ -60,7 +60,7 @@ CORS_ALLOW_CREDENTIALS = True
 
 
 CORS_ALLOWED_ORIGINS = [f"http://192.168.1.{i}:5173"
-                        for i in range(256)] + ["http://localhost:5173"]
+                        for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app"]
 
 # CORS_ALLOWED_ORIGINS = [
 #     "http://192.168.1.18:5173",
@@ -73,7 +73,7 @@ CORS_ALLOWED_ORIGINS = [f"http://192.168.1.{i}:5173"
 # ]
 
 CSRF_TRUSTED_ORIGINS = [f"http://192.168.1.{i}:5173"
-                        for i in range(256)] + ["http://localhost:5173"]
+                        for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app"]
 
 
 CSRF_COOKIE_HTTPONLY = False  # Allow JS to read the CSRF cookie
