@@ -5,20 +5,14 @@ from queues.models import Service
 from queues.serializers import ServiceSerializer
 
 
-@api_view(["GET", "POST"])
-def service_list(request, format=None):
+@api_view(["GET"])
+def service_list(request, branch_id, format=None):
     if request.method == "GET":
-        services = Service.objects.all()
+        services = Service.objects.filter(branch_id=branch_id)
         serializer = ServiceSerializer(services, many=True)
         return Response(serializer.data)
-    elif request.method == "POST":
-        serializer = ServiceSerializer(data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-@api_view(["GET", "PATCH", "DELETE"])
+@api_view(["GET"])
 def service_detail(request, pk, format=None):
     try:
         service = Service.objects.get(pk=pk)
@@ -28,20 +22,11 @@ def service_detail(request, pk, format=None):
     if request.method == "GET":
         serializer = ServiceSerializer(service)
         return Response(serializer.data)
-    elif request.method == "PATCH":
-        serializer = ServiceSerializer(service, data=request.data)
-        if serializer.is_valid():
-            serializer.save()
-            return Response(serializer.data)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    elif request.method == "DELETE":
-        service.delete()
-        return Response(status=status.HTTP_204_NO_CONTENT)
 
 @api_view(["GET"])
-def service_by_category(request, category_id, format=None):
+def service_by_category(request, branch_id, category_id, format=None):
     try:
-        services = Service.objects.filter(category_id=category_id)
+        services = Service.objects.filter(branch_id=branch_id, category_id=category_id)
     except Service.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     

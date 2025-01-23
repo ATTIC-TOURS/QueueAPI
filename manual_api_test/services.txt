@@ -1,8 +1,0 @@
-url: http GET http://192.168.1.12:8000/services/
-return
-    all available services
-
-
-url: http GET http://192.168.1.12:8000/services/category/<int:category_id>/
-return
-    all available services by category

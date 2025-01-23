@@ -19,6 +19,6 @@ from django.urls import path, include
 
 
 urlpatterns = [
-    path("queue-services/v1/", include("queues.urls.urls")),
+    path("queue-services/v1/", include("queues.urls")),
     path("admin/", admin.site.urls),   
 ]

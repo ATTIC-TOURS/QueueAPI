@@ -22,7 +22,7 @@ def tv_now_serving(request, branch_id, format=None):
     if request.method == "GET":
         queues = Queue.objects.filter(
             branch_id=branch_id,
-            status_id=Status.objects.get(name="in-progress").id,
+            status_id=Status.objects.get(name="now-serving").id,
             created_at__gte=get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(queues, many=True) 
@@ -41,7 +41,7 @@ def controller_queues(request, branch_id, format=None):
         )
         in_progress_queues = Queue.objects.filter(
             branch_id=branch_id,
-            status_id=Status.objects.get(name="in-progress").id,
+            status_id=Status.objects.get(name="now-serving").id,
             created_at__gte=get_starting_of_current_manila_timezone()
         )
         queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
@@ -75,7 +75,7 @@ def queue_call(request, branch_id, queue_id, format=None):
     if request.method == "PATCH":
         data = {
             "window": request.data["window_id"],
-            "status": Status.objects.filter(name="in-progress").values().first()["id"],
+            "status": Status.objects.filter(name="now-serving").values().first()["id"],
             "is_called": True,
             "updated_at": timezone.now()
         }
@@ -85,8 +85,38 @@ def queue_call(request, branch_id, queue_id, format=None):
             return Response(queueSerializer.data)
         return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+def update_service_cut_off(branch_id, service_id):
+    
+    # SERVICE QUOTA (temp)
+    SERVICE_QUOTA = 60
+    
+    # 1. Get all services which status is complete
+    complete_status_id = Status.objects.get(name="complete").id
+    complete_service_queues = Queue.objects.filter(
+        branch_id=branch_id,
+        service_id=service_id,
+        status_id=complete_status_id,
+        created_at__gte=get_starting_of_current_manila_timezone()
+    )
+    
+    # 2. Count the total pax
+    complete_service_total_pax = 0
+    for queue in complete_service_queues:
+        complete_service_total_pax += queue.pax
+    
+    # 3. Determine if the service is still available     
+    service = Service.objects.get(id=service_id)
+    if complete_service_total_pax >= SERVICE_QUOTA:
+        service.is_cut_off = True 
+    else:
+        service.is_cut_off = False
+    
+    # 4. Update the service
+    service.save()
+
 @api_view(["PATCH"])
-def queue_update(request, branch_id, format=None):
+def queue_status_update(request, branch_id, format=None):
     # request.data -> queue_id, status_id
     try:
         queue = Queue.objects.get(pk=request.data["queue_id"])
@@ -101,25 +131,9 @@ def queue_update(request, branch_id, format=None):
             serializer.save()
             
             # --------- tourism limit check ------------------
-            service_id = Service.objects.get(name="Tourism").id
-            complete_status_id = Status.objects.get(name="complete").id
-            queues_complete_tourism = Queue.objects.filter(
-                branch_id=branch_id,
-                service_id=service_id,
-                status_id=complete_status_id,
-                created_at__gte=get_starting_of_current_manila_timezone()
-            )
-            complete_tourism_total = 0
-            for queue in queues_complete_tourism:
-                complete_tourism_total += queue.pax
-            
-            tourism_service = Service.objects.get(name="Tourism")
-            if complete_tourism_total >= 60:
-                tourism_service.is_cut_off = True 
-            else:
-                tourism_service.is_cut_off = False
-            tourism_service.save()
-            # ---------------------------
+            tourism_service_id = Service.objects.get(name="Tourism").id
+            update_service_cut_off(branch_id, tourism_service_id)
+            # ------------------------------------------------
                 
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
@@ -127,7 +141,7 @@ def queue_update(request, branch_id, format=None):
 def generate_queue_code(service_id, queue_no, is_senior_pwd):
     service = Service.objects.get(id=service_id)
     category = Category.objects.get(id=service.category_id)
-    code = category.name[0].upper() + str(queue_no)
+    code = f"{category.name[0].upper()}-{service.name[0].upper()}{queue_no}"
     if is_senior_pwd:
         return code + " (Senior/PWD)"
     return code

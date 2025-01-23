@@ -1,4 +1,0 @@
-url: http POST http://127.0.0.1:8000/branch_login/<int:branch_id>/
-return
-    status 
-    e.g. "status": True|False

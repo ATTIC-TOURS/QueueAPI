@@ -1,5 +1,5 @@
 from django.urls import path
-from queues.apiviews import queue_api, markqueue_api
+from queues.apiviews import queue_api, marquee_api
 
 
 urlpatterns = [
@@ -7,5 +7,5 @@ urlpatterns = [
     path("branches/<int:branch_id>/tv/now-serving", queue_api.tv_now_serving),
     
     # Marquees
-    path("markqueues/<int:branch_id>", markqueue_api.markqueue_list),
+    path("marquees/<int:branch_id>", marquee_api.marquee_list),
 ]

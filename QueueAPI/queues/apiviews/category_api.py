@@ -6,9 +6,9 @@ from queues.serializers import CategorySerializer
 
 
 @api_view(["GET"])
-def category_list(request, format=None):
+def category_list(request, branch_id, format=None):
     if request.method == "GET":
-        categories = Category.objects.all()
+        categories = Category.objects.filter(branch_id=branch_id)
         categorySerializer = CategorySerializer(categories, many=True)
         return Response(categorySerializer.data)
     
