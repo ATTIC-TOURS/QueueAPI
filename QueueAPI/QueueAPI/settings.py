@@ -62,18 +62,9 @@ CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOWED_ORIGINS = [f"http://192.168.1.{i}:5173"
                         for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app"]
 
-# CORS_ALLOWED_ORIGINS = [
-#     "http://192.168.1.18:5173",
-#     "http://localhost:5173",
-#     "http://192.168.1.35:5173",
-#     "http://192.168.1.13:5173",
-#     "http://192.168.1.6:5173",
-#     "http://192.168.1.42:5173",
-#     "http://192.168.1.15:5173",
-# ]
 
 CSRF_TRUSTED_ORIGINS = [f"http://192.168.1.{i}:5173"
-                        for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app"]
+                        for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app", "https://attictoursdeveloper.pythonanywhere.com"]
 
 
 CSRF_COOKIE_HTTPONLY = False  # Allow JS to read the CSRF cookie
@@ -170,6 +161,8 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
+
+STATIC_ROOT = BASE_DIR / 'productionfiles'
 
 STATIC_URL = "static/"
 

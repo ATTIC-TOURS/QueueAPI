@@ -72,10 +72,11 @@ class QueueConsumer(AsyncWebsocketConsumer):
         await self.send(text_data=json.dumps(queues))
         
     def get_starting_of_current_manila_timezone(self):
-        year = timezone.now().now().year
-        month = timezone.now().now().month
-        day = timezone.now().now().day
-        aware_dt = datetime.datetime(year, month, day-1, 16, tzinfo=datetime.timezone.utc)
+        yesterday_dt = timezone.now() - datetime.timedelta(days=1)
+        year = yesterday_dt.year
+        month = yesterday_dt.month
+        day = yesterday_dt.day
+        aware_dt = datetime.datetime(year, month, day, 16, tzinfo=datetime.timezone.utc)
         return aware_dt
         
     @database_sync_to_async

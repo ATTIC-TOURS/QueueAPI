@@ -8,3 +8,6 @@ class Service(models.Model):
     is_cut_off = models.BooleanField(default=False, blank=False, null=False)
     quota = models.PositiveIntegerField(blank=True, null=True)
     branch = models.ForeignKey("Branch", on_delete=models.CASCADE, blank=False, null=False)
+    
+    def __str__(self):
+        return f"{self.name} - {self.branch}"

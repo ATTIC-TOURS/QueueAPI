@@ -20,6 +20,9 @@ class Queue(models.Model):
     pax = models.PositiveIntegerField(default=0, blank=False, null=False)
     called_at = models.DateTimeField(blank=True, null=True)
     
+    def __str__(self):
+        return f"{self.service} - {self.pax} - {self.name} - {self.code} - {self.status}"
+    
 # ---------------------- RECEIVER ---------------------- #
 from django.dispatch import receiver
 from django.db.models.signals import post_save, post_delete
