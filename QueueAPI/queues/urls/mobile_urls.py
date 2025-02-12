@@ -11,4 +11,7 @@ urlpatterns = [
     
     # Queues
     path("queues/<int:branch_id>/<int:service_id>", queue_api.queue),
+    
+    # new generating a queue
+    path("queue", queue_api.new_queue),
 ]

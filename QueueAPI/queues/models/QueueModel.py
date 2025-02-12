@@ -7,18 +7,21 @@ class Queue(models.Model):
     branch = models.ForeignKey("Branch", on_delete=models.CASCADE, blank=False, null=False)
     category = models.ForeignKey("Category", on_delete=models.CASCADE, blank=False, null=False)
     service = models.ForeignKey("Service", on_delete=models.CASCADE, blank=False, null=False)
+    service_type = models.CharField(max_length=50, blank=True, null=True)
     window = models.ForeignKey("Window", on_delete=models.CASCADE, blank=True, null=True)
-    queue_no =  models.PositiveIntegerField(blank=False, null=False)
     status = models.ForeignKey("Status", on_delete=models.CASCADE, blank=False, null=False)
-    is_called = models.BooleanField(default=False, blank=False, null=False)
+    queue_code = models.CharField(max_length=10, blank=True, null=True)
+    applicant_name = models.CharField(max_length=50, blank=False, null=False)
+    no_applicant = models.PositiveIntegerField(blank=True, null=True)
+    applicant_type = models.CharField(max_length=50, blank=True, null=True)
+    is_senior_pwd = models.BooleanField(default=False, blank=False, null=False)
+    queue_no =  models.PositiveIntegerField(blank=False, null=False)
+    coordinator_name = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(default=timezone.now, blank=False, null=False)
     updated_at = models.DateTimeField(blank=True, null=True)
-    code = models.CharField(max_length=10, blank=False, null=False)
-    name = models.CharField(max_length=50, blank=False, null=False)
-    email = models.CharField(max_length=100, blank=True, null=True)
-    is_senior_pwd = models.BooleanField(default=False, blank=False, null=False)
-    pax = models.PositiveIntegerField(default=0, blank=False, null=False)
     called_at = models.DateTimeField(blank=True, null=True)
+    is_called = models.BooleanField(default=False, blank=False, null=False)    
+    is_priority = models.BooleanField(default=False, blank=False, null=False)    
     
     def __str__(self):
         return f"{self.service} - {self.pax} - {self.name} - {self.code} - {self.status}"
@@ -85,8 +88,8 @@ def ws_notify_controller_queues(sender, instance, **kwargs):
 @receiver([post_save], sender=Queue)
 def ws_notify_called_queue(sender, instance, **kwargs):
     branch = instance.branch
-    name = instance.name
-    queue_code = instance.code
+    applicant_name = instance.applicant_name
+    queue_code = instance.queue_code
     
     if instance.is_called:
         window = Window.objects.get(id=instance.window_id)
@@ -95,7 +98,7 @@ def ws_notify_called_queue(sender, instance, **kwargs):
         group_name = f"call-queue-{branch.id}"
         event = {
             "type": "queue.call",
-            "name": name,
+            "name": applicant_name,
             "window_name": window.name,
             "queue_code": queue_code
         }

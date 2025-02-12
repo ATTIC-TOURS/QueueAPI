@@ -174,17 +174,6 @@ def queue(request, branch_id, service_id, format=None):
         queueSerializer = QueueSerializer(data=new_queue)
         if queueSerializer.is_valid():
             new_queue = queueSerializer.save()
-            # ----- EMAIL (BEGIN) ------
-            # if r_email:
-            #     queue_info = {
-            #         "name": new_queue.name,
-            #         "queue_code": new_queue.code,
-            #         "datetime": new_queue.created_at,
-            #         "category_name": new_queue.category_id.name,
-            #         "service_name": new_queue.service_id.name
-            #     }
-            #     email.send_greetings(r_email, queue_info)              
-            # ----- EMAIL (END) --------
             return Response(
                     mobile_queue_status(queueSerializer.data), 
                     status=status.HTTP_201_CREATED
@@ -241,3 +230,12 @@ def no_queue_waiting_status(request, branch_id, service_id, format=None):
         })
             
         return Response(None)
+
+@api_view(["POST"])
+def new_queue(request, format=None):
+    queueSerializer = QueueSerializer(data=request.data)
+    if queueSerializer.is_valid():
+        queueSerializer.save()
+        return Response(queueSerializer.data, status=status.HTTP_201_CREATED)
+    print(queueSerializer)
+    return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
