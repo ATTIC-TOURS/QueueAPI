@@ -7,5 +7,5 @@ def get_starting_of_current_manila_timezone():
         year = yesterday_dt.year
         month = yesterday_dt.month
         day = yesterday_dt.day
-        aware_dt = datetime.datetime(year, month, day, 16, tzinfo=datetime.timezone.utc)
+        aware_dt = datetime.datetime(year, month, day, 8, tzinfo=datetime.timezone.utc)
         return aware_dt
