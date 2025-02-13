@@ -15,6 +15,9 @@ urlpatterns = [
     path("queue_call/<int:branch_id>/<int:queue_id>", queue_api.queue_call),
     path("remove_queue/<int:branch_id>/<int:queue_id>", queue_api.queue_detail),
     
+    # New Queues
+    path("queues/<int:pk>", queue_api.new_queue_detail),
+    
     # new
     path("queues/<int:queue_id>", queue_api.queue_pax),
     
