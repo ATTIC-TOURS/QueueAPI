@@ -4,40 +4,23 @@ from rest_framework.response import Response
 from queues.models import Queue, Status, Service, Window, Category, Branch
 from queues.serializers import QueueSerializer
 from django.utils import timezone
-from asgiref.sync import async_to_sync
-from channels.layers import get_channel_layer
-from queues import email
 from queues.apiviews.utils.time import get_starting_of_current_manila_timezone
 
 
 @api_view(["GET"])
 def tv_now_serving(request, branch_id, format=None):
     if request.method == "GET":
-        queues = Queue.objects.filter(
-            branch_id=branch_id,
-            status_id=Status.objects.get(name="now-serving").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
-        )
+        queues = Queue.get_current_now_serving_queues(branch_id)
         queueSerializer = QueueSerializer(queues, many=True) 
         return Response(queueSerializer.data, status.HTTP_200_OK)
     return Response(status.HTTP_400_BAD_REQUEST)
 
-
-
 @api_view(["GET"])
 def controller_queues(request, branch_id, format=None):
     if request.method == "GET":
-        waiting_queues = Queue.objects.filter(
-            branch_id=branch_id,
-            status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
-        )
-        in_progress_queues = Queue.objects.filter(
-            branch_id=branch_id,
-            status_id=Status.objects.get(name="now-serving").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
-        )
-        queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
+        waiting_queues = Queue.get_current_waiting_queues(branch_id)
+        now_serving_queues = Queue.get_current_now_serving_queues(branch_id)
+        queueSerializer = QueueSerializer(waiting_queues.union(now_serving_queues), many=True)
         return Response(queueSerializer.data, status.HTTP_200_OK)
     return Response(status.HTTP_400_BAD_REQUEST)
 
@@ -57,6 +40,8 @@ def current_queue_stats(request, branch_id, format=None):
         return Response(statuses, status.HTTP_200_OK)
     return Response(status.HTTP_400_BAD_REQUEST)
 
+
+# Queue PATCH
 @api_view(["PATCH"])
 def queue_call(request, branch_id, queue_id, format=None):
     # request.data -> queue_id, window_id
@@ -79,7 +64,7 @@ def queue_call(request, branch_id, queue_id, format=None):
         return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-
+# Queue PATCH
 @api_view(["PATCH"])
 def queue_status_update(request, branch_id, format=None):
     # request.data -> queue_id, status_id
@@ -161,6 +146,7 @@ def generate_new_queue(branch_id, service_id, queue_no, name, email, is_senior_p
             "pax": pax
         }
 
+# Queue POST
 @api_view(["POST"])
 def queue(request, branch_id, service_id, format=None):    
     r_queue_no = request.data["queue_no"]
@@ -181,6 +167,7 @@ def queue(request, branch_id, service_id, format=None):
         return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# Queue PATCH
 @api_view(["PATCH"])
 def queue_pax(request, queue_id, format=None):
     try:
@@ -195,6 +182,8 @@ def queue_pax(request, queue_id, format=None):
             return Response(status=status.HTTP_200_OK)
         return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# Queue DELETE
 @api_view(["DELETE"])
 def queue_detail(request, branch_id, queue_id, format=None):
     try:
@@ -206,36 +195,50 @@ def queue_detail(request, branch_id, queue_id, format=None):
         queue.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
 
-@api_view(["GET"])
-def no_queue_waiting_status(request, branch_id, service_id, format=None):
-    
-    service = Service.objects.get(id=service_id)
-    category = Category.objects.get(id=service.category_id)
-    
-    # Get a timezone-aware datetime for the start of today
-    start_of_today = timezone.localtime(timezone.now()).replace(hour=0, minute=0, second=0, microsecond=0)
-    queues = Queue.objects.filter(
-            branch_id=branch_id,
-            category_id=category.id,
-            status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=start_of_today
-        )
-    
+@api_view(["GET", "POST"])
+def new_queue_list(request, format=None):
     if request.method == "GET":
-        n_waiting = len(queues)
-        return Response({
-            "category_name": category.name,
-            "service_name": service.name,
-            "n_waiting": n_waiting
-        })
-            
-        return Response(None)
+        try:
+            branch_id = request.GET.get("branch", None)
+            if branch_id is not None:
+                queues = Queue.objects.filter(branch_id=branch_id)
+            else:
+                queues = Queue.objects.all()
+        except Queue.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        serializer = QueueSerializer(queues, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+        
+    elif request.method == "POST":
+        queueSerializer = QueueSerializer(data=request.data)
+        if queueSerializer.is_valid():
+            queueSerializer.save()
+            return Response(queueSerializer.data, status=status.HTTP_201_CREATED)
+        return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(["POST"])
-def new_queue(request, format=None):
-    queueSerializer = QueueSerializer(data=request.data)
-    if queueSerializer.is_valid():
-        queueSerializer.save()
-        return Response(queueSerializer.data, status=status.HTTP_201_CREATED)
-    print(queueSerializer)
-    return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+@api_view(['GET', 'PATCH', 'DELETE'])
+def new_queue_detail(request, pk):
+    """
+    Retrieve, update or delete a queue.
+    """
+    try:
+        queue = Queue.objects.get(pk=pk)
+    except Queue.DoesNotExist:
+        return Response(status=status.HTTP_404_NOT_FOUND)
+
+    if request.method == 'GET':
+        serializer = QueueSerializer(queue)
+        return Response(serializer.data)
+
+    elif request.method == 'PATCH':
+        serializer = QueueSerializer(queue, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    elif request.method == 'DELETE':
+        queue.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    
