@@ -9,21 +9,18 @@ from queues.serializers import BranchSerializer
 def branch_list(request, format=None):
     if request.method == "GET":
         branches = Branch.objects.all()
-        branchSerializer = BranchSerializer(branches, many=True)
-        return Response(branchSerializer.data)
+        serializer = BranchSerializer(branches, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 @api_view(["POST"])
-def branch_login(request, branch_id, format=None):
-    password = request.data["password"]
-    
+def branch_login(request, format=None):
     try:
-        branch = Branch.objects.get(pk=branch_id)
+        branch = Branch.objects.get(pk=request.data["branch_id"])
     except Branch.DoesNotExist:
         return Response(status=status.HTTP_404_NOT_FOUND)
     
     if request.method == "POST":
         return Response(
-            {
-                "status": password == branch.password
-            }
+            { "login_status": request.data["password"] == branch.password },
+            status=status.HTTP_200_OK
         )
