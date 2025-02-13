@@ -7,7 +7,7 @@ from queues.urls import mobile_urls, controller_urls, tv_urls
 urlpatterns = [
     # branch api
     path("branches", branch_api.branch_list),
-    path("branch_login/<int:branch_id>", branch_api.branch_login),
+    path("branch_login", branch_api.branch_login),
     
     # category api
     path("categories/<int:category_id>", category_api.category_detail),

@@ -20,10 +20,9 @@ class HttpRequestTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_branch_login(self):
-        BRANCH_ID = 5
-        url = f"{self.API_URL}/branch_login/{BRANCH_ID}"
-        body =  {"password": 1234}
-        response = self.client.post(url, body)
+        url = f"{self.API_URL}/branch_login"
+        data =  { "branch_id": constants.MAIN_OFFICE_ID, "password": "mainoffice"}
+        response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_categories(self):
