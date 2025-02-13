@@ -42,5 +42,5 @@ urlpatterns = [
     path("windows", window_api.window_list),
     
     # Marquees
-    path("marquees/<int:branch_id>", marquee_api.marquee_list),
+    path("marquees", marquee_api.marquee_list),
 ]
