@@ -63,8 +63,8 @@ class HttpRequestTest(APITestCase):
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
-    def test_viewable_status(self):
-        url = f"{self.API_URL}/viewable_status"
+    def test_statuses(self):
+        url = f"{self.API_URL}/statuses"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
@@ -96,19 +96,19 @@ class HttpRequestTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_current_queue_stats(self):
-        BRANCH_ID = 5
-        url = f"{self.API_URL}/branches/{BRANCH_ID}/current-queue-stats"
-        response = self.client.get(url)
+        url = f"{self.API_URL}/current-queue-stats"
+        data = { "branch_id": constants.MAIN_OFFICE_ID }
+        response = self.client.get(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_controller_queues(self):
-        BRANCH_ID = 5
-        url = f"{self.API_URL}/branches/{BRANCH_ID}/controller-queues"
-        response = self.client.get(url)
+        url = f"{self.API_URL}/controller-queues"
+        data = { "branch_id": constants.MAIN_OFFICE_ID }
+        response = self.client.get(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_tv_now_serving(self):
-        BRANCH_ID = 5
-        url = f"{self.API_URL}/branches/{BRANCH_ID}/tv/now-serving"
-        response = self.client.get(url)
+        url = f"{self.API_URL}/tv-now-serving-queues"
+        data = { "branch_id":constants.MAIN_OFFICE_ID }
+        response = self.client.get(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

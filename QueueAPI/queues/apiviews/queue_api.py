@@ -7,16 +7,18 @@ from django.utils import timezone
 
 
 @api_view(["GET"])
-def tv_now_serving(request, branch_id, format=None):
+def tv_now_serving(request, format=None):
     if request.method == "GET":
+        branch_id = request.GET.get("branch_id")
         queues = Queue.get_current_now_serving_queues(branch_id)
         queueSerializer = QueueSerializer(queues, many=True) 
         return Response(queueSerializer.data, status.HTTP_200_OK)
     return Response(status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
-def controller_queues(request, branch_id, format=None):
+def controller_queues(request, format=None):
     if request.method == "GET":
+        branch_id = request.GET.get("branch_id")
         waiting_queues = Queue.get_current_waiting_queues(branch_id)
         now_serving_queues = Queue.get_current_now_serving_queues(branch_id)
         queueSerializer = QueueSerializer(waiting_queues.union(now_serving_queues), many=True)
@@ -24,8 +26,9 @@ def controller_queues(request, branch_id, format=None):
     return Response(status.HTTP_400_BAD_REQUEST)
 
 @api_view(["GET"])
-def current_queue_stats(request, branch_id, format=None):
+def current_queue_stats(request, format=None):
     if request.method == "GET":
+        branch_id = request.GET.get("branch_id")
         statuses = Status.objects.all()
         statuses = {status.name: 0 for status in statuses}
         queues = Queue.get_current_queues(branch_id)
