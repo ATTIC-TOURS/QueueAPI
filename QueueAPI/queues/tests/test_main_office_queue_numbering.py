@@ -83,7 +83,7 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "PASSPORT": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": constants.CLAIM_PASSPORT_MAIN_OFFICE_ID,
+            "category": constants.PASSPORT_MAIN_OFFICE_ID,
             "service": 10, # temp static number
             "applicant_name": "kenji",
         }

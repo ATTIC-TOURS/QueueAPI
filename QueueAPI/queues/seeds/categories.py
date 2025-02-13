@@ -3,207 +3,222 @@ from .constants import *
 
 main_office_categories = [
     {
-        "name": "Japan Visa", 
+        "name": JAPAN_VISA, 
         "display_name": "Apply for Japan Visa", 
         "branch_id": MAIN_OFFICE_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa", 
         "branch_id": MAIN_OFFICE_ID
     },
     {
-        "name": "Ticket", 
+        "name": TICKET, 
         "display_name": "Ticket", 
         "branch_id": MAIN_OFFICE_ID
     },
     {
-        "name": "Claim Passport", 
-        "display_name": "Claim Passport", 
+        "name": PASSPORT, 
+        "display_name": "Passport", 
+        "branch_id": MAIN_OFFICE_ID
+    },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": MAIN_OFFICE_ID
+    },
+    {
+        "name": OTHER_VISA, 
+        "display_name": "Other Visa", 
+        "branch_id": MAIN_OFFICE_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
         "branch_id": MAIN_OFFICE_ID
     },
 ]
 
 moa_categories = [
     {
-        "name": "Japan Visa", 
+        "name": JAPAN_VISA, 
         "display_name": "Apply for Japan Visa", 
         "branch_id": MOA_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa", 
         "branch_id": MOA_ID
     },
     {
-        "name": "Ticket", 
+        "name": TICKET, 
         "display_name": "Ticket", 
         "branch_id": MOA_ID
     },
     {
-        "name": "Claim Passport", 
-        "display_name": "Claim Passport", 
+        "name": PASSPORT, 
+        "display_name": "Passport", 
         "branch_id": MOA_ID
     },
 ]
 
 megamall_categories = [
     {
-        "name": "Japan Visa", 
+        "name": JAPAN_VISA, 
         "display_name": "Apply for Japan Visa", 
         "branch_id": MEGAMALL_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa",
         "branch_id": MEGAMALL_ID
     },
     {
-        "name": "Ticket", 
+        "name": TICKET, 
         "display_name": "Ticket", 
         "branch_id": MEGAMALL_ID
     },
     {
-        "name": "Claim Passport", 
-        "display_name": "Claim Passport", 
+        "name": PASSPORT, 
+        "display_name": "Passport", 
         "branch_id": MEGAMALL_ID
     },
 ]
 
 north_edsa_categories = [
     {
-        "name": "Japan Visa", 
+        "name": JAPAN_VISA, 
         "display_name": "Apply for Japan Visa", 
         "branch_id": NORTH_EDSA_ID
     },
     {
-        "name": "Korea Visa",
+        "name": KOREA_VISA,
         "display_name": "Apply for Korea Visa",
         "branch_id": NORTH_EDSA_ID
     },
     {
-        "name": "Ticket",
+        "name": TICKET,
         "display_name": "Ticket",
         "branch_id": NORTH_EDSA_ID
     },
     {
-        "name": "Claim Passport",
-        "display_name": "Claim Passport", 
+        "name": PASSPORT,
+        "display_name": "Passport", 
         "branch_id": NORTH_EDSA_ID
     },
 ]
 
 fairview_categories = [
     {
-        "name": "Japan Visa",
+        "name": JAPAN_VISA,
         "display_name": "Apply for Japan Visa",
         "branch_id": FAIRVIEW_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa",
         "branch_id": FAIRVIEW_ID
     },
     {
-        "name": "Ticket", 
+        "name": TICKET, 
         "display_name": "Ticket", 
         "branch_id": FAIRVIEW_ID
     },
     {
-        "name": "Claim Passport",
-        "display_name": "Claim Passport", 
+        "name": PASSPORT,
+        "display_name": "Passport", 
         "branch_id": FAIRVIEW_ID
     },
 ]
 
 southmall_categories = [
     {
-        "name": "Japan Visa",
+        "name": JAPAN_VISA,
         "display_name": "Apply for Japan Visa",
         "branch_id": SOUTHMALL_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa", 
         "branch_id": SOUTHMALL_ID
     },
     {
-        "name": "Ticket",
+        "name": TICKET,
         "display_name": "Ticket",
         "branch_id": SOUTHMALL_ID
     },
     {
-        "name": "Claim Passport",
-        "display_name": "Claim Passport", 
+        "name": PASSPORT,
+        "display_name": "Passport", 
         "branch_id": SOUTHMALL_ID
     },
 ]
 
 clark_categories = [
     {
-        "name": "Japan Visa",
+        "name": JAPAN_VISA,
         "display_name": "Apply for Japan Visa",
         "branch_id": CLARK_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa", 
         "branch_id": CLARK_ID
     },
     {
-        "name": "Ticket",
+        "name": TICKET,
         "display_name": "Ticket",
         "branch_id": CLARK_ID
     },
     {
-        "name": "Claim Passport",
-        "display_name": "Claim Passport",
+        "name": PASSPORT,
+        "display_name": "Passport",
         "branch_id": CLARK_ID
     },
 ]
 
 cebu_categories = [
     {
-        "name": "Japan Visa", 
+        "name": JAPAN_VISA, 
         "display_name": "Apply for Japan Visa", 
         "branch_id": CEBU_ID
     },
     {
-        "name": "Korea Visa",
+        "name": KOREA_VISA,
         "display_name": "Apply for Korea Visa",
         "branch_id": CEBU_ID
     },
     {
-        "name": "Ticket",
+        "name": TICKET,
         "display_name": "Ticket", 
         "branch_id": CEBU_ID
     },
     {
-        "name": "Claim Passport", 
-        "display_name": "Claim Passport", 
+        "name": PASSPORT, 
+        "display_name": "Passport", 
         "branch_id": CEBU_ID
     },
 ]
 
 davao_categories = [
     {
-        "name": "Japan Visa", 
+        "name": JAPAN_VISA, 
         "display_name": "Apply for Japan Visa", 
         "branch_id": DAVAO_ID
     },
     {
-        "name": "Korea Visa", 
+        "name": KOREA_VISA, 
         "display_name": "Apply for Korea Visa",
         "branch_id": DAVAO_ID
     },
     {
-        "name": "Ticket",
+        "name": TICKET,
         "display_name": "Ticket", 
         "branch_id": DAVAO_ID
     },
     {
-        "name": "Claim Passport",
-        "display_name": "Claim Passport", 
+        "name": PASSPORT,
+        "display_name": "Passport", 
         "branch_id": DAVAO_ID
     },
 ]

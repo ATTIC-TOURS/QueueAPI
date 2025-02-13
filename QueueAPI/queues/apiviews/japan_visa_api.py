@@ -11,7 +11,10 @@ def visa_type_list(request, format=None):
     if request.method == "GET":
         branch_id = request.GET.get("branch_id", None)
         try:
-            japan_visa_category = Category.objects.get(branch_id=branch_id, name="JAPAN VISA")
+            japan_visa_category = Category.objects.get(
+                branch_id=branch_id, 
+                name=constants.JAPAN_VISA
+            )
             services = Service.objects.filter(
                 branch_id=branch_id,
                 category=japan_visa_category
