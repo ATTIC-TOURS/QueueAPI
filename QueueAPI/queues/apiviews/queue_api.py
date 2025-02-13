@@ -4,7 +4,6 @@ from rest_framework.response import Response
 from queues.models import Queue, Status, Service, Window, Category, Branch
 from queues.serializers import QueueSerializer
 from django.utils import timezone
-from queues.apiviews.utils.time import get_starting_of_current_manila_timezone
 
 
 @api_view(["GET"])
@@ -29,10 +28,7 @@ def current_queue_stats(request, branch_id, format=None):
     if request.method == "GET":
         statuses = Status.objects.all()
         statuses = {status.name: 0 for status in statuses}
-        queues = Queue.objects.filter(
-            branch_id=branch_id,
-            created_at__gte=get_starting_of_current_manila_timezone()
-        )
+        queues = Queue.get_current_queues(branch_id)
         for queue in queues:
             queue_status = queue.status_id.name
             statuses[queue_status] += 1
@@ -199,7 +195,7 @@ def queue_detail(request, branch_id, queue_id, format=None):
 def new_queue_list(request, format=None):
     if request.method == "GET":
         try:
-            branch_id = request.GET.get("branch", None)
+            branch_id = request.GET.get("branch_id", None)
             if branch_id is not None:
                 queues = Queue.objects.filter(branch_id=branch_id)
             else:

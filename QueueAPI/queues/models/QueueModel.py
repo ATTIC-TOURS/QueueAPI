@@ -136,7 +136,7 @@ class Queue(models.Model):
     is_priority = models.BooleanField(default=False, blank=False, null=False)    
     
     def __str__(self):
-        return f"{self.service} - {self.pax} - {self.name} - {self.code} - {self.status}"
+        return f"{self.service} - {self.no_applicant} - {self.applicant_name} - {self.queue_code} - {self.status}"
     
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
@@ -146,6 +146,12 @@ class Queue(models.Model):
         if self.queue_no is None:
             self.queue_no, self.queue_code = get_queue_no_and_code(self)
         super(Queue, self).save(*args, **kwargs)
+    
+    def get_current_queues(branch_id):
+        return Queue.objects.filter(
+            branch_id=branch_id,
+            created_at__gte=get_starting_of_current_manila_timezone()
+        )
     
     def get_current_waiting_queues(branch_id):
         return Queue.objects.filter(
