@@ -5,13 +5,13 @@ from queues.urls import mobile_urls, controller_urls, tv_urls
 
 
 urlpatterns = [
-    # branch api
+    # new branch api
     path("branches", branch_api.branch_list),
     path("branch_login", branch_api.branch_login),
     
-    # category api
-    path("categories/<int:category_id>", category_api.category_detail),
-    path("branches/<int:branch_id>/categories", category_api.category_list),
+    # new category api
+    path("categories", category_api.category_list),
+    path("categories/<int:pk>", category_api.category_detail),
     
     # service api
     path("branches/<int:branch_id>/services", service_api.service_list),

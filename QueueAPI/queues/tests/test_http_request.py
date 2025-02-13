@@ -26,9 +26,9 @@ class HttpRequestTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_categories(self):
-        BRANCH_ID = 5
-        url = f"{self.API_URL}/branches/{BRANCH_ID}/categories"
-        response = self.client.get(url)
+        url = f"{self.API_URL}/categories"
+        data = { "branch_id": constants.MAIN_OFFICE_ID }
+        response = self.client.get(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         
     def test_category(self):
