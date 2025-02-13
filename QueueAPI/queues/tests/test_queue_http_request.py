@@ -70,7 +70,7 @@ class QueueHttpRequestTest(APITestCase):
     
     def test_get_branch_queues(self):
         url = f"{self.API_URL}/queues"
-        data = {"branch": constants.MAIN_OFFICE_ID}
+        data = {"branch_id": constants.MAIN_OFFICE_ID}
         response = self.client.get(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     

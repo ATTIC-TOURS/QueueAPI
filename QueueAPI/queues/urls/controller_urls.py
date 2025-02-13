@@ -1,5 +1,5 @@
 from django.urls import path
-from queues.apiviews import queue_api, status_api, window_api
+from queues.apiviews import queue_api, status_api, window_api, japan_visa_api
 
 
 urlpatterns = [
@@ -17,6 +17,9 @@ urlpatterns = [
     
     # New Queues
     path("queues/<int:pk>", queue_api.new_queue_detail),
+    
+    # New Japan Visa Types
+    path("japan-visa-types/<int:pk>", japan_visa_api.visa_type_detail),
     
     # new
     path("queues/<int:queue_id>", queue_api.queue_pax),

@@ -5,7 +5,7 @@ from queues.models import Queue
 from queues.seeds import constants
 
 
-class QueueHttpRequestTest(APITestCase):
+class MainOfficeQueueNumberTest(APITestCase):
     
     # data = {
     #         "branch": constants.MAIN_OFFICE_ID,
