@@ -48,6 +48,7 @@ def mobile_queue_status(serialized_data):
         "category_name": category.name,
         "service_name": service.name,
         "service_type": serialized_data["service_type"],
+        "queue_no": serialized_data["queue_no"],
         "queue_code": serialized_data["queue_code"],
         "applicant_name": serialized_data["applicant_name"],
         "applicant_type": serialized_data["applicant_type"],
