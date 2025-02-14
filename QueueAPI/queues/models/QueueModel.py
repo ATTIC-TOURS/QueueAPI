@@ -14,7 +14,6 @@ def other_branch_numbering_and_code(queue):
         branch=queue.branch,
         created_at__gte=get_starting_of_current_manila_timezone(),
         category=queue.category,
-        service=queue.service
     ).last()
     if last_queue is not None:
         queue_no = last_queue.queue_no + 1
