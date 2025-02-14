@@ -1,7 +1,6 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from queues.apiviews import category_api, service_api, branch_api, status_api, queue_api, japan_visa_api, window_api, marquee_api
-# from queues.urls import mobile_urls, controller_urls, tv_urls
 
 
 urlpatterns = [
