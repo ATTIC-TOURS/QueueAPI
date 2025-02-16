@@ -53,6 +53,7 @@ def mobile_queue_status(serialized_data):
         "applicant_name": serialized_data["applicant_name"],
         "applicant_type": serialized_data["applicant_type"],
         "coordinator_name": serialized_data["coordinator_name"],
+        "no_applicant": serialized_data["no_applicant"],
         "created_at": serialized_data["created_at"]
     }
 

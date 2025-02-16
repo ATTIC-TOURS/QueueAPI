@@ -3,6 +3,11 @@ from .constants import *
 
 main_office_services = [
     {
+        "name": "Inquire", 
+        "branch_id": MAIN_OFFICE_ID, 
+        "category_id": JAPAN_VISA_MAIN_OFFICE_ID, 
+    },
+    {
         "name": "Tourism", 
         "branch_id": MAIN_OFFICE_ID, 
         "category_id": JAPAN_VISA_MAIN_OFFICE_ID, 
