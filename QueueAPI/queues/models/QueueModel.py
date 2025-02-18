@@ -115,24 +115,24 @@ def get_queue_no_and_code(queue):
         return other_branch_numbering_and_code(queue)
 
 class Queue(models.Model):
-    branch = models.ForeignKey("Branch", on_delete=models.CASCADE, blank=False, null=False)
-    category = models.ForeignKey("Category", on_delete=models.CASCADE, blank=False, null=False)
-    service = models.ForeignKey("Service", on_delete=models.CASCADE, blank=False, null=False)
+    branch = models.ForeignKey("Branch", on_delete=models.CASCADE)
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)
+    service = models.ForeignKey("Service", on_delete=models.CASCADE)
     service_type = models.CharField(max_length=50, blank=True, null=True)
     window = models.ForeignKey("Window", on_delete=models.CASCADE, blank=True, null=True)
-    status = models.ForeignKey("Status", default=get_default_status, on_delete=models.CASCADE, blank=False, null=False)
+    status = models.ForeignKey("Status", default=get_default_status, on_delete=models.CASCADE)
     queue_code = models.CharField(max_length=10, blank=True, null=True)
-    applicant_name = models.CharField(max_length=50, blank=False, null=False)
-    no_applicant = models.PositiveIntegerField(blank=True, null=True)
+    applicant_name = models.CharField(max_length=50)
+    no_applicant = models.PositiveIntegerField()
     applicant_type = models.CharField(max_length=50, blank=True, null=True)
     is_senior_pwd = models.BooleanField(default=False)
     queue_no =  models.PositiveIntegerField(blank=True, null=True)
     coordinator_name = models.CharField(max_length=100, blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now, blank=False, null=False)
+    created_at = models.DateTimeField(default=timezone.now)
     updated_at = models.DateTimeField(blank=True, null=True)
     called_at = models.DateTimeField(blank=True, null=True)
-    is_called = models.BooleanField(default=False, blank=False, null=False)    
-    is_priority = models.BooleanField(default=False, blank=False, null=False)    
+    is_called = models.BooleanField(default=False)    
+    is_priority = models.BooleanField(default=False)    
     
     def __str__(self):
         return f"{self.service} - {self.no_applicant} - {self.applicant_name} - {self.queue_code} - {self.status}"
@@ -247,7 +247,7 @@ def ws_notify_called_queue(sender, instance, **kwargs):
         instance.is_called = False
         instance.save()
     
-@receiver([post_save], sender=Queue)
+@receiver([post_save, post_delete], sender=Queue)
 def ws_notify_current_tourism_total(sender, instance, **kwargs):
     branch = instance.branch
     

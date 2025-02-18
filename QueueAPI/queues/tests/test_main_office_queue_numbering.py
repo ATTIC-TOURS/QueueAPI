@@ -31,35 +31,40 @@ class MainOfficeQueueNumberTest(APITestCase):
             "category": 1,
             "service": 1,
             "applicant_name": "kenji",
-            "applicant_type": "PTAA"
+            "applicant_type": "PTAA",
+            "no_applicant": 5
         },
         "MAN POWER": {
             "branch": constants.MAIN_OFFICE_ID,
             "category": 1,
             "service": 1,
             "applicant_name": "kenji",
-            "applicant_type": "MAN POWER"
+            "applicant_type": "MAN POWER",
+            "no_applicant": 5
         },
         "INQUIRE": {
             "branch": constants.MAIN_OFFICE_ID,
             "category": 1,
             "service": 1,
             "applicant_name": "kenji",
-            "service_type": "INQUIRE"
+            "service_type": "INQUIRE",
+            "no_applicant": 5
         },
         "ADDOCS": {
             "branch": constants.MAIN_OFFICE_ID,
             "category": 1,
             "service": 1,
             "applicant_name": "kenji",
-            "service_type": "ADDITIONAL DOCUMENTS"
+            "service_type": "ADDITIONAL DOCUMENTS",
+            "no_applicant": 5
         },
         "PENDING": {
             "branch": constants.MAIN_OFFICE_ID,
             "category": 1,
             "service": 1,
             "applicant_name": "kenji",
-            "service_type": "PENDING DOCUMENTS"
+            "service_type": "PENDING DOCUMENTS",
+            "no_applicant": 5
         },
         "WALK-IN": {
             "branch": constants.MAIN_OFFICE_ID,
@@ -67,6 +72,7 @@ class MainOfficeQueueNumberTest(APITestCase):
             "service": 1,
             "applicant_name": "kenji",
             "applicant_type": "WALK-IN",
+            "no_applicant": 5
         },
         "TA": {
             "branch": constants.MAIN_OFFICE_ID,
@@ -74,18 +80,21 @@ class MainOfficeQueueNumberTest(APITestCase):
             "service": 1,
             "applicant_name": "kenji",
             "applicant_type": "TRAVEL AGENCY",
+            "no_applicant": 5
         },
         "TICKET": {
             "branch": constants.MAIN_OFFICE_ID,
             "category": constants.TICKET_MAIN_OFFICE_ID,
             "service": 8, # temp static number
             "applicant_name": "kenji",
+            "no_applicant": 5
         },
         "PASSPORT": {
             "branch": constants.MAIN_OFFICE_ID,
             "category": constants.PASSPORT_MAIN_OFFICE_ID,
             "service": 10, # temp static number
             "applicant_name": "kenji",
+            "no_applicant": 5
         }
     }
     

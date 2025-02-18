@@ -132,7 +132,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         for queue in queues:
             queue_status = queue.status.name
-            statuses[queue_status] += queue.pax
+            statuses[queue_status] += queue.no_applicant
         statuses["finish"] = statuses["pending"] + statuses["complete"]
         return statuses
     
@@ -153,7 +153,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
         complete_tourism_total = 0
         for queue in queues_complete_tourism:
-            complete_tourism_total += queue.pax
+            complete_tourism_total += queue.no_applicant
             
         now_serving_status_id = Status.objects.get(name="now-serving").id
         queues_now_serving_tourism = Queue.objects.filter(
@@ -165,7 +165,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
         now_serving_tourism_total = 0
         for queue in queues_now_serving_tourism:
-            now_serving_tourism_total += queue.pax
+            now_serving_tourism_total += queue.no_applicant
             
         waiting_status_id = Status.objects.get(name="waiting").id
         queues_waiting_tourism = Queue.objects.filter(
@@ -177,7 +177,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
         waiting_tourism_total = 0
         for queue in queues_waiting_tourism:
-            waiting_tourism_total += queue.pax
+            waiting_tourism_total += queue.no_applicant
         
         quota = Service.objects.get(branch_id=self.branch_id, name="Tourism").quota
             

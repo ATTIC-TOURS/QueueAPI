@@ -78,6 +78,7 @@ class HttpRequestTest(APITestCase):
             # "status": 1,
             # "queue_code": "J-T1",
             "applicant_name": "Kenji",
+            "no_applicant": 5
             # "no_applicant": 5,
             # "applicant_type": "Walk-In",
             # "is_senior_pwd": True,
