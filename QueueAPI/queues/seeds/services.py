@@ -50,12 +50,12 @@ main_office_services = [
         "category_id": KOREA_VISA_MAIN_OFFICE_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": MAIN_OFFICE_ID, 
         "category_id": TICKET_MAIN_OFFICE_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": MAIN_OFFICE_ID, 
         "category_id": TICKET_MAIN_OFFICE_ID, 
     },
@@ -140,12 +140,12 @@ moa_services = [
         "category_id": KOREA_VISA_MOA_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": MOA_ID, 
         "category_id": TICKET_MOA_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": MOA_ID, 
         "category_id": TICKET_MOA_ID, 
     },
@@ -205,12 +205,12 @@ megamall_services = [
         "category_id": KOREA_VISA_MEGAMALL_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": MEGAMALL_ID, 
         "category_id": TICKET_MEGAMALL_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": MEGAMALL_ID, 
         "category_id": TICKET_MEGAMALL_ID, 
     },
@@ -270,12 +270,12 @@ north_edsa_services = [
         "category_id": KOREA_VISA_NORTH_EDSA_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": NORTH_EDSA_ID, 
         "category_id": TICKET_NORTH_EDSA_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": NORTH_EDSA_ID, 
         "category_id": TICKET_NORTH_EDSA_ID, 
     },
@@ -335,12 +335,12 @@ fairview_services = [
         "category_id": KOREA_VISA_FAIRVIEW_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": FAIRVIEW_ID, 
         "category_id": TICKET_FAIRVIEW_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": FAIRVIEW_ID, 
         "category_id": TICKET_FAIRVIEW_ID, 
     },
@@ -400,12 +400,12 @@ southmall_services = [
         "category_id": KOREA_VISA_SOUTHMALL_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": SOUTHMALL_ID, 
         "category_id": TICKET_SOUTHMALL_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": SOUTHMALL_ID, 
         "category_id": TICKET_SOUTHMALL_ID, 
     },
@@ -465,12 +465,12 @@ clark_services = [
         "category_id": KOREA_VISA_CLARK_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": CLARK_ID, 
         "category_id": TICKET_CLARK_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": CLARK_ID, 
         "category_id": TICKET_CLARK_ID, 
     },
@@ -530,12 +530,12 @@ cebu_services = [
         "category_id": KOREA_VISA_CEBU_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": CEBU_ID, 
         "category_id": TICKET_CEBU_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": CEBU_ID, 
         "category_id": TICKET_CEBU_ID, 
     },
@@ -595,12 +595,12 @@ davao_services = [
         "category_id": KOREA_VISA_DAVAO_ID, 
     },
     {
-        "name": "International", 
+        "name": "International Ticket", 
         "branch_id": DAVAO_ID, 
         "category_id": TICKET_DAVAO_ID, 
     },
     {
-        "name": "Domestic", 
+        "name": "Domestic Ticket", 
         "branch_id": DAVAO_ID, 
         "category_id": TICKET_DAVAO_ID, 
     },
