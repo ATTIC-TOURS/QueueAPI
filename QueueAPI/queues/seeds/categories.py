@@ -60,6 +60,16 @@ moa_categories = [
         "display_name": "Passport", 
         "branch_id": MOA_ID
     },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": MOA_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
+        "branch_id": MOA_ID
+    },
 ]
 
 megamall_categories = [

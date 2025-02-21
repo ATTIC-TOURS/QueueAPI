@@ -11,8 +11,8 @@ main_office_services = [
         "name": "Tourism", 
         "branch_id": MAIN_OFFICE_ID, 
         "category_id": JAPAN_VISA_MAIN_OFFICE_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -98,11 +98,16 @@ main_office_services = [
 
 moa_services = [
     {
+        "name": "Inquire", 
+        "branch_id": MOA_ID, 
+        "category_id": JAPAN_VISA_MOA_ID, 
+    },
+    {
         "name": "Tourism", 
         "branch_id": MOA_ID, 
         "category_id": JAPAN_VISA_MOA_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -159,15 +164,102 @@ moa_services = [
         "branch_id": MOA_ID, 
         "category_id": PASSPORT_MOA_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": MOA_ID, 
+        "category_id": TOUR_PACKAGE_MOA_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": MOA_ID, 
+        "category_id": OTHER_SERVICES_MOA_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": MOA_ID, 
+        "category_id": OTHER_SERVICES_MOA_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": MOA_ID, 
+        "category_id": OTHER_SERVICES_MOA_ID, 
+    },
 ]
+
+
+north_edsa_services = [
+    {
+        "name": "Tourism", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
+    },
+    {
+        "name": "Business, Conference, Cultural Exchange", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Visiting Relatives", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Visiting Friends", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Visiting US Military Personnel", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "COE", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Nikkei-Jin", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Korea Visa", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": KOREA_VISA_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "International Ticket", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": TICKET_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Domestic Ticket", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": TICKET_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Claim Passport", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": PASSPORT_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Follow Up Passport", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": PASSPORT_NORTH_EDSA_ID, 
+    },
+]
+
 
 megamall_services = [
     {
         "name": "Tourism", 
         "branch_id": MEGAMALL_ID, 
         "category_id": JAPAN_VISA_MEGAMALL_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -226,70 +318,7 @@ megamall_services = [
     },
 ]
 
-north_edsa_services = [
-    {
-        "name": "Tourism", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
-    },
-    {
-        "name": "Business, Conference, Cultural Exchange", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Visiting Relatives", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Visiting Friends", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Visiting US Military Personnel", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "COE", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Nikkei-Jin", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Korea Visa", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": KOREA_VISA_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "International Ticket", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": TICKET_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Domestic Ticket", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": TICKET_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Claim Passport", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": PASSPORT_NORTH_EDSA_ID, 
-    },
-    {
-        "name": "Follow Up Passport", 
-        "branch_id": NORTH_EDSA_ID, 
-        "category_id": PASSPORT_NORTH_EDSA_ID, 
-    },
-]
+
 
 fairview_services = [
     {
