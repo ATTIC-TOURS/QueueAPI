@@ -186,8 +186,12 @@ moa_services = [
     },
 ]
 
-
 north_edsa_services = [
+    {
+        "name": "Inquire", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": JAPAN_VISA_NORTH_EDSA_ID, 
+    },
     {
         "name": "Tourism", 
         "branch_id": NORTH_EDSA_ID, 
@@ -250,10 +254,34 @@ north_edsa_services = [
         "branch_id": NORTH_EDSA_ID, 
         "category_id": PASSPORT_NORTH_EDSA_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": TOUR_PACKAGE_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": OTHER_SERVICES_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": OTHER_SERVICES_NORTH_EDSA_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": NORTH_EDSA_ID, 
+        "category_id": OTHER_SERVICES_NORTH_EDSA_ID, 
+    },
 ]
 
-
 megamall_services = [
+    {
+        "name": "Inquire", 
+        "branch_id": MEGAMALL_ID, 
+        "category_id": JAPAN_VISA_MEGAMALL_ID, 
+    },
     {
         "name": "Tourism", 
         "branch_id": MEGAMALL_ID, 
@@ -316,17 +344,40 @@ megamall_services = [
         "branch_id": MEGAMALL_ID, 
         "category_id": PASSPORT_MEGAMALL_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": MEGAMALL_ID, 
+        "category_id": TOUR_PACKAGE_MEGAMALL_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": MEGAMALL_ID, 
+        "category_id": OTHER_SERVICES_MEGAMALL_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": MEGAMALL_ID, 
+        "category_id": OTHER_SERVICES_MEGAMALL_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": MEGAMALL_ID, 
+        "category_id": OTHER_SERVICES_MEGAMALL_ID, 
+    },
 ]
 
-
-
 fairview_services = [
+    {
+        "name": "Inquire", 
+        "branch_id": FAIRVIEW_ID, 
+        "category_id": JAPAN_VISA_FAIRVIEW_ID, 
+    },
     {
         "name": "Tourism", 
         "branch_id": FAIRVIEW_ID, 
         "category_id": JAPAN_VISA_FAIRVIEW_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -383,15 +434,40 @@ fairview_services = [
         "branch_id": FAIRVIEW_ID, 
         "category_id": PASSPORT_FAIRVIEW_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": FAIRVIEW_ID, 
+        "category_id": TOUR_PACKAGE_FAIRVIEW_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": FAIRVIEW_ID, 
+        "category_id": OTHER_SERVICES_FAIRVIEW_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": FAIRVIEW_ID, 
+        "category_id": OTHER_SERVICES_FAIRVIEW_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": FAIRVIEW_ID, 
+        "category_id": OTHER_SERVICES_FAIRVIEW_ID, 
+    },
 ]
 
 southmall_services = [
     {
+        "name": "Inquire", 
+        "branch_id": SOUTHMALL_ID, 
+        "category_id": JAPAN_VISA_SOUTHMALL_ID, 
+    },
+    {
         "name": "Tourism", 
         "branch_id": SOUTHMALL_ID, 
         "category_id": JAPAN_VISA_SOUTHMALL_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -429,16 +505,6 @@ southmall_services = [
         "category_id": KOREA_VISA_SOUTHMALL_ID, 
     },
     {
-        "name": "International Ticket", 
-        "branch_id": SOUTHMALL_ID, 
-        "category_id": TICKET_SOUTHMALL_ID, 
-    },
-    {
-        "name": "Domestic Ticket", 
-        "branch_id": SOUTHMALL_ID, 
-        "category_id": TICKET_SOUTHMALL_ID, 
-    },
-    {
         "name": "Claim Passport", 
         "branch_id": SOUTHMALL_ID, 
         "category_id": PASSPORT_SOUTHMALL_ID, 
@@ -448,15 +514,40 @@ southmall_services = [
         "branch_id": SOUTHMALL_ID, 
         "category_id": PASSPORT_SOUTHMALL_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": SOUTHMALL_ID, 
+        "category_id": TOUR_PACKAGE_SOUTHMALL_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": SOUTHMALL_ID, 
+        "category_id": OTHER_SERVICES_SOUTHMALL_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": SOUTHMALL_ID, 
+        "category_id": OTHER_SERVICES_SOUTHMALL_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": SOUTHMALL_ID, 
+        "category_id": OTHER_SERVICES_SOUTHMALL_ID, 
+    },
 ]
 
 clark_services = [
     {
+        "name": "Inquire", 
+        "branch_id": CLARK_ID, 
+        "category_id": JAPAN_VISA_CLARK_ID, 
+    },
+    {
         "name": "Tourism", 
         "branch_id": CLARK_ID, 
         "category_id": JAPAN_VISA_CLARK_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -494,16 +585,6 @@ clark_services = [
         "category_id": KOREA_VISA_CLARK_ID, 
     },
     {
-        "name": "International Ticket", 
-        "branch_id": CLARK_ID, 
-        "category_id": TICKET_CLARK_ID, 
-    },
-    {
-        "name": "Domestic Ticket", 
-        "branch_id": CLARK_ID, 
-        "category_id": TICKET_CLARK_ID, 
-    },
-    {
         "name": "Claim Passport", 
         "branch_id": CLARK_ID, 
         "category_id": PASSPORT_CLARK_ID, 
@@ -513,15 +594,40 @@ clark_services = [
         "branch_id": CLARK_ID, 
         "category_id": PASSPORT_CLARK_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": CLARK_ID, 
+        "category_id": TOUR_PACKAGE_CLARK_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": CLARK_ID, 
+        "category_id": OTHER_SERVICES_CLARK_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": CLARK_ID, 
+        "category_id": OTHER_SERVICES_CLARK_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": CLARK_ID, 
+        "category_id": OTHER_SERVICES_CLARK_ID, 
+    },
 ]
 
 cebu_services = [
     {
+        "name": "Inquire", 
+        "branch_id": CEBU_ID, 
+        "category_id": JAPAN_VISA_CEBU_ID, 
+    },
+    {
         "name": "Tourism", 
         "branch_id": CEBU_ID, 
         "category_id": JAPAN_VISA_CEBU_ID, 
-        "notes": "Tourist Visa is only 60pax a day)", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -559,16 +665,6 @@ cebu_services = [
         "category_id": KOREA_VISA_CEBU_ID, 
     },
     {
-        "name": "International Ticket", 
-        "branch_id": CEBU_ID, 
-        "category_id": TICKET_CEBU_ID, 
-    },
-    {
-        "name": "Domestic Ticket", 
-        "branch_id": CEBU_ID, 
-        "category_id": TICKET_CEBU_ID, 
-    },
-    {
         "name": "Claim Passport", 
         "branch_id": CEBU_ID, 
         "category_id": PASSPORT_CEBU_ID, 
@@ -578,15 +674,40 @@ cebu_services = [
         "branch_id": CEBU_ID, 
         "category_id": PASSPORT_CEBU_ID, 
     },
+    {
+        "name": "Tour Package", 
+        "branch_id": CEBU_ID, 
+        "category_id": TOUR_PACKAGE_CEBU_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": CEBU_ID, 
+        "category_id": OTHER_SERVICES_CEBU_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": CEBU_ID, 
+        "category_id": OTHER_SERVICES_CEBU_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": CEBU_ID, 
+        "category_id": OTHER_SERVICES_CEBU_ID, 
+    },
 ]
 
 davao_services = [
     {
+        "name": "Inquire", 
+        "branch_id": DAVAO_ID, 
+        "category_id": JAPAN_VISA_DAVAO_ID, 
+    },
+    {
         "name": "Tourism", 
         "branch_id": DAVAO_ID, 
         "category_id": JAPAN_VISA_DAVAO_ID, 
-        "notes": "Tourist Visa is only 60pax a day", 
-        "quota": 60
+        # "notes": "Tourist Visa is only 60pax a day", 
+        # "quota": 60
     },
     {
         "name": "Business, Conference, Cultural Exchange", 
@@ -624,16 +745,6 @@ davao_services = [
         "category_id": KOREA_VISA_DAVAO_ID, 
     },
     {
-        "name": "International Ticket", 
-        "branch_id": DAVAO_ID, 
-        "category_id": TICKET_DAVAO_ID, 
-    },
-    {
-        "name": "Domestic Ticket", 
-        "branch_id": DAVAO_ID, 
-        "category_id": TICKET_DAVAO_ID, 
-    },
-    {
         "name": "Claim Passport", 
         "branch_id": DAVAO_ID, 
         "category_id": PASSPORT_DAVAO_ID, 
@@ -642,6 +753,26 @@ davao_services = [
         "name": "Follow Up Passport", 
         "branch_id": DAVAO_ID, 
         "category_id": PASSPORT_DAVAO_ID, 
+    },
+    {
+        "name": "Tour Package", 
+        "branch_id": DAVAO_ID, 
+        "category_id": TOUR_PACKAGE_DAVAO_ID, 
+    },
+    {
+        "name": "Data Sim Card", 
+        "branch_id": DAVAO_ID, 
+        "category_id": OTHER_SERVICES_DAVAO_ID, 
+    },
+    {
+        "name": "JR Pass", 
+        "branch_id": DAVAO_ID, 
+        "category_id": OTHER_SERVICES_DAVAO_ID, 
+    },
+    {
+        "name": "Travel Insurance", 
+        "branch_id": DAVAO_ID, 
+        "category_id": OTHER_SERVICES_DAVAO_ID, 
     },
 ]
 

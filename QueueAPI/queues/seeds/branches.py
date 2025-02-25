@@ -1,6 +1,6 @@
 branches = [
     {"name": "Main Office", "password": "mainoffice"},
-    {"name": "SM Mall of Asia", "password": "1234"},
+    {"name": "SM Mall of Asia", "password": "2022"},
     {"name": "SM North Edsa", "password": "1234"},
     {"name": "SM Megamall", "password": "1234"},
     {"name": "SM Fairview", "password": "arviepogi"},

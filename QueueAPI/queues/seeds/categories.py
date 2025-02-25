@@ -72,6 +72,39 @@ moa_categories = [
     },
 ]
 
+north_edsa_categories = [
+    {
+        "name": JAPAN_VISA, 
+        "display_name": "Apply for Japan Visa", 
+        "branch_id": NORTH_EDSA_ID
+    },
+    {
+        "name": KOREA_VISA, 
+        "display_name": "Apply for Korea Visa", 
+        "branch_id": NORTH_EDSA_ID
+    },
+    {
+        "name": TICKET, 
+        "display_name": "Ticket", 
+        "branch_id": NORTH_EDSA_ID
+    },
+    {
+        "name": PASSPORT, 
+        "display_name": "Passport", 
+        "branch_id": NORTH_EDSA_ID
+    },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": NORTH_EDSA_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
+        "branch_id": NORTH_EDSA_ID
+    },
+]
+
 megamall_categories = [
     {
         "name": JAPAN_VISA, 
@@ -80,7 +113,7 @@ megamall_categories = [
     },
     {
         "name": KOREA_VISA, 
-        "display_name": "Apply for Korea Visa",
+        "display_name": "Apply for Korea Visa", 
         "branch_id": MEGAMALL_ID
     },
     {
@@ -93,40 +126,29 @@ megamall_categories = [
         "display_name": "Passport", 
         "branch_id": MEGAMALL_ID
     },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": MEGAMALL_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
+        "branch_id": MEGAMALL_ID
+    },
 ]
 
-north_edsa_categories = [
-    {
-        "name": JAPAN_VISA, 
-        "display_name": "Apply for Japan Visa", 
-        "branch_id": NORTH_EDSA_ID
-    },
-    {
-        "name": KOREA_VISA,
-        "display_name": "Apply for Korea Visa",
-        "branch_id": NORTH_EDSA_ID
-    },
-    {
-        "name": TICKET,
-        "display_name": "Ticket",
-        "branch_id": NORTH_EDSA_ID
-    },
-    {
-        "name": PASSPORT,
-        "display_name": "Passport", 
-        "branch_id": NORTH_EDSA_ID
-    },
-]
+
 
 fairview_categories = [
     {
-        "name": JAPAN_VISA,
-        "display_name": "Apply for Japan Visa",
+        "name": JAPAN_VISA, 
+        "display_name": "Apply for Japan Visa", 
         "branch_id": FAIRVIEW_ID
     },
     {
         "name": KOREA_VISA, 
-        "display_name": "Apply for Korea Visa",
+        "display_name": "Apply for Korea Visa", 
         "branch_id": FAIRVIEW_ID
     },
     {
@@ -135,16 +157,26 @@ fairview_categories = [
         "branch_id": FAIRVIEW_ID
     },
     {
-        "name": PASSPORT,
+        "name": PASSPORT, 
         "display_name": "Passport", 
+        "branch_id": FAIRVIEW_ID
+    },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": FAIRVIEW_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
         "branch_id": FAIRVIEW_ID
     },
 ]
 
 southmall_categories = [
     {
-        "name": JAPAN_VISA,
-        "display_name": "Apply for Japan Visa",
+        "name": JAPAN_VISA, 
+        "display_name": "Apply for Japan Visa", 
         "branch_id": SOUTHMALL_ID
     },
     {
@@ -153,21 +185,26 @@ southmall_categories = [
         "branch_id": SOUTHMALL_ID
     },
     {
-        "name": TICKET,
-        "display_name": "Ticket",
+        "name": PASSPORT, 
+        "display_name": "Passport", 
         "branch_id": SOUTHMALL_ID
     },
     {
-        "name": PASSPORT,
-        "display_name": "Passport", 
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": SOUTHMALL_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
         "branch_id": SOUTHMALL_ID
     },
 ]
 
 clark_categories = [
     {
-        "name": JAPAN_VISA,
-        "display_name": "Apply for Japan Visa",
+        "name": JAPAN_VISA, 
+        "display_name": "Apply for Japan Visa", 
         "branch_id": CLARK_ID
     },
     {
@@ -176,13 +213,18 @@ clark_categories = [
         "branch_id": CLARK_ID
     },
     {
-        "name": TICKET,
-        "display_name": "Ticket",
+        "name": PASSPORT, 
+        "display_name": "Passport", 
         "branch_id": CLARK_ID
     },
     {
-        "name": PASSPORT,
-        "display_name": "Passport",
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": CLARK_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
         "branch_id": CLARK_ID
     },
 ]
@@ -194,18 +236,23 @@ cebu_categories = [
         "branch_id": CEBU_ID
     },
     {
-        "name": KOREA_VISA,
-        "display_name": "Apply for Korea Visa",
-        "branch_id": CEBU_ID
-    },
-    {
-        "name": TICKET,
-        "display_name": "Ticket", 
+        "name": KOREA_VISA, 
+        "display_name": "Apply for Korea Visa", 
         "branch_id": CEBU_ID
     },
     {
         "name": PASSPORT, 
         "display_name": "Passport", 
+        "branch_id": CEBU_ID
+    },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": CEBU_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
         "branch_id": CEBU_ID
     },
 ]
@@ -218,17 +265,22 @@ davao_categories = [
     },
     {
         "name": KOREA_VISA, 
-        "display_name": "Apply for Korea Visa",
+        "display_name": "Apply for Korea Visa", 
         "branch_id": DAVAO_ID
     },
     {
-        "name": TICKET,
-        "display_name": "Ticket", 
-        "branch_id": DAVAO_ID
-    },
-    {
-        "name": PASSPORT,
+        "name": PASSPORT, 
         "display_name": "Passport", 
+        "branch_id": DAVAO_ID
+    },
+    {
+        "name": TOUR_PACKAGE, 
+        "display_name": "Tour Package", 
+        "branch_id": DAVAO_ID
+    },
+    {
+        "name": OTHER_SERVICES, 
+        "display_name": "Other Services", 
         "branch_id": DAVAO_ID
     },
 ]
