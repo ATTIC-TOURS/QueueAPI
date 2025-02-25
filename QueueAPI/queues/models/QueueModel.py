@@ -133,6 +133,7 @@ class Queue(models.Model):
     called_at = models.DateTimeField(blank=True, null=True)
     is_called = models.BooleanField(default=False)    
     is_priority = models.BooleanField(default=False)    
+    applicant_photo = models.TextField(blank=True, null=True)
     
     def __str__(self):
         return f"{self.service} - {self.no_applicant} - {self.applicant_name} - {self.queue_code} - {self.status}"
@@ -144,6 +145,9 @@ class Queue(models.Model):
             self.called_at = timezone.now()
         if self.queue_no is None:
             self.queue_no, self.queue_code = get_queue_no_and_code(self)
+        if self.status == Status.objects.get(name="complete") or self.status == Status.objects.get(name="pending") or self.status == Status.objects.get(name="return"):
+            self.applicant_photo = None
+            
         super(Queue, self).save(*args, **kwargs)
     
     def get_current_queues(branch_id):
@@ -230,6 +234,7 @@ def ws_notify_called_queue(sender, instance, **kwargs):
     branch = instance.branch
     applicant_name = instance.applicant_name
     queue_code = instance.queue_code
+    applicant_photo = instance.applicant_photo
     
     if instance.is_called:
         window = Window.objects.get(id=instance.window_id)
@@ -240,7 +245,8 @@ def ws_notify_called_queue(sender, instance, **kwargs):
             "type": "queue.call",
             "name": applicant_name,
             "window_name": window.name,
-            "queue_code": queue_code
+            "queue_code": queue_code,
+            "applicant_photo": applicant_photo
         }
         async_to_sync(channel_layer.group_send)(group_name, event)
         
