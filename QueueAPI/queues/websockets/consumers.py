@@ -49,10 +49,12 @@ class QueueConsumer(AsyncWebsocketConsumer):
         name = event["name"]
         window_name = event["window_name"]
         queue_code = event["queue_code"]
+        applicant_photo = event["applicant_photo"]
         await self.send(text_data=json.dumps({
             "name": name, 
             "window_name": window_name, 
-            "queue_code": queue_code
+            "queue_code": queue_code,
+            "applicant_photo": applicant_photo
         }))
 
     async def queues_update(self, event):
