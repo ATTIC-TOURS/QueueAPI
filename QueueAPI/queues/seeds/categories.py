@@ -288,8 +288,8 @@ davao_categories = [
 categories = (
     main_office_categories + 
     moa_categories +
-    megamall_categories +
     north_edsa_categories +
+    megamall_categories +
     fairview_categories +
     southmall_categories +
     clark_categories +

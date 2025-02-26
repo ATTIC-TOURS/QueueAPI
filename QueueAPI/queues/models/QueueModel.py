@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from queues.models import Window, Status
+from queues.models import Window, Status, Service, Category
 from queues.apiviews.utils.time import get_starting_of_current_manila_timezone
 from queues.seeds import constants
 
@@ -23,97 +23,101 @@ def other_branch_numbering_and_code(queue):
 
 def main_branch_numbering_and_code(queue):
     queue_no = 1
+    
+    # PTAA
     if queue.applicant_type == "PTAA":
-        ptaa_last_queue = Queue.objects.filter(
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            applicant_type="PTAA"
+            applicant_type=queue.applicant_type,
+            created_at__gte=get_starting_of_current_manila_timezone()
         ).last()
-        if ptaa_last_queue is not None:
-            queue_no = ptaa_last_queue.queue_no + 1
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"PTAA-{queue_no}")
     
+    # MAN POWER
     elif queue.applicant_type == "MAN POWER":
-        manpower_last_queue = Queue.objects.filter(
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            applicant_type="MAN POWER"
+            applicant_type=queue.applicant_type,
+            created_at__gte=get_starting_of_current_manila_timezone()
         ).last()
-        if manpower_last_queue is not None:
-            queue_no = manpower_last_queue.queue_no + 1
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"M-{queue_no}")
     
-    elif queue.service_type == "INQUIRE":
-        inquire_last_queue = Queue.objects.filter(
+    # INQUIRE
+    elif queue.service.name == "Inquire":
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            service_type="INQUIRE"
+            service=queue.service,
+            created_at__gte=get_starting_of_current_manila_timezone() 
         ).last()
-        if inquire_last_queue is not  None:
-            queue_no = inquire_last_queue.queue_no + 1
+        if last_queue is not  None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"I-{queue_no}")
     
+    # ADDITIONAL
     elif queue.service_type == "ADDITIONAL DOCUMENTS":
-        addocs_last_queue = Queue.objects.filter(
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            service_type="ADDITIONAL DOCUMENTS"
+            service_type=queue.service_type,
+            created_at__gte=get_starting_of_current_manila_timezone()
         ).last()
-        if addocs_last_queue is not None:
-            queue_no = addocs_last_queue.queue_no + 1
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"A-{queue_no}")
     
+    # PENDING
     elif queue.service_type == "PENDING DOCUMENTS":
-        pending_last_queue = Queue.objects.filter(
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            service_type="PENDING DOCUMENTS"
+            service_type=queue.service_type,
+            created_at__gte=get_starting_of_current_manila_timezone()
         ).last()
-        if pending_last_queue is not None:
-            queue_no = pending_last_queue.queue_no + 1
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"P-{queue_no}")
     
-    elif queue.applicant_type == "WALK-IN":
-        walkin_last_queue = Queue.objects.filter(
+    # NON PTAA
+    elif queue.applicant_type == "NON PTAA":
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            applicant_type="WALK-IN"
+            applicant_type=queue.applicant_type,
+            created_at__gte=get_starting_of_current_manila_timezone()
         ).last()
         service_initial = queue.service.name[0].upper()
-        if walkin_last_queue is not None:
-            queue_no = walkin_last_queue.queue_no + 1
-        return (queue_no, f"J-{service_initial}{queue_no}")
-    
-    elif queue.applicant_type == "TRAVEL AGENCY":
-        ta_last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            applicant_type="TRAVEL AGENCY"
-        ).last()
-        service_initial = queue.service.name[0].upper()
-        if ta_last_queue is not None:
-            queue_no = ta_last_queue.queue_no + 1
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"TA-J-{service_initial}{queue_no}")
     
-    elif queue.category_id == constants.TICKET_MAIN_OFFICE_ID:
-        ticket_last_queue = Queue.objects.filter(
+    elif queue.category.name == "JAPAN VISA":
+        last_queue = Queue.objects.filter(
             branch=queue.branch,
-            created_at__gte=get_starting_of_current_manila_timezone(),
-            category_id=constants.TICKET_MAIN_OFFICE_ID
+            category=queue.category,
+            created_at__gte=get_starting_of_current_manila_timezone()
         ).last()
-        if ticket_last_queue is not None:
-            queue_no = ticket_last_queue.queue_no + 1
+        service_initial = queue.service.name[0].upper()
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
+        return (queue_no, f"J-{service_initial}{queue_no}")
+    
+    elif queue.category.name == "TICKET":
+        last_queue = Queue.objects.filter(
+            branch=queue.branch,
+            category=queue.category,
+            created_at__gte=get_starting_of_current_manila_timezone()
+        ).last()
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
         return (queue_no, f"T-{queue_no}")
     
     else:
         return other_branch_numbering_and_code(queue)
     
 def get_queue_no_and_code(queue):
-    if queue.branch_id == constants.MAIN_OFFICE_ID:
-        return main_branch_numbering_and_code(queue)
-    else:
-        return other_branch_numbering_and_code(queue)
-
+    return main_branch_numbering_and_code(queue)
+   
 class Queue(models.Model):
     branch = models.ForeignKey("Branch", on_delete=models.CASCADE)
     category = models.ForeignKey("Category", on_delete=models.CASCADE)

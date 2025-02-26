@@ -779,8 +779,8 @@ davao_services = [
 services = (
     main_office_services +
     moa_services +
-    megamall_services +
     north_edsa_services +
+    megamall_services +
     fairview_services +
     southmall_services +
     clark_services +
