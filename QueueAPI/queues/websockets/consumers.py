@@ -19,9 +19,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
         # sends these data first time connected
         queues = None
-        if self.queue_status == "waiting":
-            queues = await self.get_waiting_queues() 
-        elif self.queue_status == "now-serving":
+        if self.queue_status == "now-serving":
             queues = await self.get_in_progress_queues()
         elif self.queue_status == "controller":
             queues = await self.get_controller_queues()
@@ -59,9 +57,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
     async def queues_update(self, event):
         queue_status = event["queue_status"]
         
-        if queue_status == "waiting": # unused
-            queues = await self.get_waiting_queues()
-        elif queue_status == "now-serving":
+        if queue_status == "now-serving":
             queues = await self.get_in_progress_queues()
         elif queue_status == "controller":
             queues = await self.get_controller_queues()
@@ -71,47 +67,58 @@ class QueueConsumer(AsyncWebsocketConsumer):
             queues = await self.get_tourism_stat()
             
         await self.send(text_data=json.dumps(queues))
-        
+    
+    WAITING_STATUS_ID = None
+    NOW_SERVING_STATUS_ID = None
+    
     @database_sync_to_async
     def get_in_progress_queues(self):
         from queues.models import Queue, Status
         from queues.serializers import QueueSerializer
+        if self.NOW_SERVING_STATUS_ID is None:
+            self.NOW_SERVING_STATUS_ID = Status.objects.get(name="now-serving").id
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            status_id=Status.objects.get(name="now-serving").id,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        )
-        queueSerializer = QueueSerializer(queues, many=True) 
-        return queueSerializer.data   
-    
-    # unused 
-    @database_sync_to_async
-    def get_waiting_queues(self):
-        from queues.models import Queue, Status
-        from queues.serializers import QueueSerializer
-        queues = Queue.objects.filter(
-            branch_id=self.branch_id,
-            status_id=Status.objects.get(name="waiting").id,
+            status_id=self.NOW_SERVING_STATUS_ID,
             created_at__date=timezone.localtime(timezone.now()).date()
         )
         serializer = QueueSerializer(queues, many=True) 
-        return serializer.data
+        return serializer.data   
     
     @database_sync_to_async
     def get_controller_queues(self):
         from queues.models import Queue, Status
         from queues.serializers import QueueSerializer
-        waiting_queues = Queue.objects.filter(
+        
+        if self.WAITING_STATUS_ID is None:
+            self.WAITING_STATUS_ID = Status.objects.get(name="waiting").id
+        
+        if self.NOW_SERVING_STATUS_ID is None:
+            self.NOW_SERVING_STATUS_ID = Status.objects.get(name="now-serving").id
+            
+        controller_queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            status_id=Status.objects.get(name="waiting").id,
+            status_id=self.WAITING_STATUS_ID,
+            created_at__date=timezone.localtime(timezone.now()).date()
+        ) | Queue.objects.filter(
+            branch_id=self.branch_id,
+            status_id=self.NOW_SERVING_STATUS_ID,
             created_at__date=timezone.localtime(timezone.now()).date()
         )
+        
+        waiting_queues = Queue.objects.filter(
+            branch_id=self.branch_id,
+            status_id=self.WAITING_STATUS_ID,
+            created_at__date=timezone.localtime(timezone.now()).date()
+        ) 
+          
         in_progress_queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            status_id=Status.objects.get(name="now-serving").id,
+            status_id=self.NOW_SERVING_STATUS_ID,
             created_at__date=timezone.localtime(timezone.now()).date()
         )
         serializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
+        # serializer = QueueSerializer(controller_queues, many=True)
         return serializer.data
 
     @database_sync_to_async
