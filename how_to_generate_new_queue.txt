@@ -1,0 +1,10 @@
+http 
+POST 
+http://192.168.1.22:8000/queue-services/v1/queues 
+branch=1 
+category=1 
+service=2 
+applicant_name=kenji 
+no_applicant=3 
+
+http POST http://192.168.1.22:8000/queue-services/v1/queues branch=1 category=1 service=2 applicant_name=kenji no_applicant=3 
