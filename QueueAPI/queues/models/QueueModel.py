@@ -7,115 +7,30 @@ from queues.seeds import constants
 def get_default_status():
     return Status.objects.get(name="waiting").id
 
-def other_branch_numbering_and_code(queue):
+def default_numbering(queue):
     queue_no = 1
+    if queue.service.name == "Inquire":
+        last_queue = Queue.objects.filter(
+            branch=queue.branch,
+            created_at__date=timezone.localtime(timezone.now()).date(),
+            service=queue.service,
+        ).last()
+        if last_queue is not None:
+            queue_no = last_queue.queue_no + 1
+        return (queue_no, f"Q{queue_no}")
+
     last_queue = Queue.objects.filter(
         branch=queue.branch,
         created_at__date=timezone.localtime(timezone.now()).date(),
         category=queue.category,
-    ).last()
+    ).exclude(service=Service.objects.get(name="Inquire", branch=queue.branch)).last()
     if last_queue is not None:
         queue_no = last_queue.queue_no + 1
     category_initial = queue.category.name[0].upper()
-    service_initial = queue.service.name[0].upper()
-    return (queue_no, f"{category_initial}-{service_initial}{queue_no}")
-
-def main_branch_numbering_and_code(queue):
-    queue_no = 1
-    
-    # PTAA
-    if queue.applicant_type == "PTAA":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            applicant_type=queue.applicant_type,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"PTAA-{queue_no}")
-    
-    # MAN POWER
-    elif queue.applicant_type == "MAN POWER":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            applicant_type=queue.applicant_type,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"M-{queue_no}")
-    
-    # INQUIRE
-    elif queue.service.name == "Inquire":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            service=queue.service,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        if last_queue is not  None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"I-{queue_no}")
-    
-    # ADDITIONAL
-    elif queue.service_type == "ADDITIONAL DOCUMENTS":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            service_type=queue.service_type,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"A-{queue_no}")
-    
-    # PENDING
-    elif queue.service_type == "PENDING DOCUMENTS":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            service_type=queue.service_type,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"P-{queue_no}")
-    
-    # NON PTAA
-    elif queue.applicant_type == "NON PTAA":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            applicant_type=queue.applicant_type,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        service_initial = queue.service.name[0].upper()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"TA-J-{service_initial}{queue_no}")
-    
-    elif queue.category.name == "JAPAN VISA":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            category=queue.category,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        service_initial = queue.service.name[0].upper()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"J-{service_initial}{queue_no}")
-    
-    elif queue.category.name == "TICKET":
-        last_queue = Queue.objects.filter(
-            branch=queue.branch,
-            category=queue.category,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        ).last()
-        if last_queue is not None:
-            queue_no = last_queue.queue_no + 1
-        return (queue_no, f"T-{queue_no}")
-    
-    else:
-        return other_branch_numbering_and_code(queue)
+    return (queue_no, f"{category_initial}{queue_no}")
     
 def get_queue_no_and_code(queue):
-    return main_branch_numbering_and_code(queue)
+    return default_numbering(queue)
    
 class Queue(models.Model):
     branch = models.ForeignKey("Branch", on_delete=models.CASCADE)      # required
@@ -179,25 +94,12 @@ from django.db.models.signals import post_save, post_delete
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
-
-@receiver([post_save, post_delete], sender=Queue)
-def ws_notify_waiting_queues(sender, instance, **kwargs):
-    branch = instance.branch
-    
-    channel_layer = get_channel_layer()
-    group_name = f"waiting-queue-{branch.id}"
-    event = {
-        "type": "queues.update",
-        "branch_id": branch.id,
-        "queue_status": "waiting"
-    }
-    async_to_sync(channel_layer.group_send)(group_name, event)
+channel_layer = get_channel_layer()
 
 @receiver([post_save, post_delete], sender=Queue)
 def ws_notify_now_serving_queues(sender, instance, **kwargs):
     branch = instance.branch
     
-    channel_layer = get_channel_layer()
     group_name = f"now-serving-queue-{branch.id}"
     event = {
         "type": "queues.update",
@@ -210,7 +112,6 @@ def ws_notify_now_serving_queues(sender, instance, **kwargs):
 def ws_notify_current_stats(sender, instance, **kwargs):
     branch = instance.branch
     
-    channel_layer = get_channel_layer()
     group_name = f"stats-queue-{branch.id}"
     event = {
         "type": "queues.update",
@@ -223,7 +124,6 @@ def ws_notify_current_stats(sender, instance, **kwargs):
 def ws_notify_controller_queues(sender, instance, **kwargs):
     branch = instance.branch
     
-    channel_layer = get_channel_layer()
     group_name = f"controller-queue-{branch.id}"
     event = {
         "type": "queues.update",
@@ -242,7 +142,6 @@ def ws_notify_called_queue(sender, instance, **kwargs):
     if instance.is_called:
         window = Window.objects.get(id=instance.window_id)
         
-        channel_layer = get_channel_layer()
         group_name = f"call-queue-{branch.id}"
         event = {
             "type": "queue.call",
@@ -256,14 +155,14 @@ def ws_notify_called_queue(sender, instance, **kwargs):
         instance.is_called = False
         instance.save()
     
-@receiver([post_save, post_delete], sender=Queue)
-def ws_notify_current_tourism_total(sender, instance, **kwargs):
-    branch = instance.branch
+# @receiver([post_save, post_delete], sender=Queue)
+# def ws_notify_current_tourism_total(sender, instance, **kwargs):
+#     branch = instance.branch
     
-    channel_layer = get_channel_layer()
-    group_name = f"current-tourism-stat-queue-{branch.id}"
-    event = {
-        "type": "queues.update",
-        "queue_status": "current-tourism-stat"
-    }
-    async_to_sync(channel_layer.group_send)(group_name, event)
+#     channel_layer = get_channel_layer()
+#     group_name = f"current-tourism-stat-queue-{branch.id}"
+#     event = {
+#         "type": "queues.update",
+#         "queue_status": "current-tourism-stat"
+#     }
+#     async_to_sync(channel_layer.group_send)(group_name, event)
