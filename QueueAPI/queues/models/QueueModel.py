@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from queues.models import Window, Status, Service, Category
-from queues.apiviews.utils.time import get_starting_of_current_manila_timezone
 from queues.seeds import constants
 
 
@@ -12,7 +11,7 @@ def other_branch_numbering_and_code(queue):
     queue_no = 1
     last_queue = Queue.objects.filter(
         branch=queue.branch,
-        created_at__gte=get_starting_of_current_manila_timezone(),
+        created_at__date=timezone.localtime(timezone.now()).date(),
         category=queue.category,
     ).last()
     if last_queue is not None:
@@ -29,7 +28,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             applicant_type=queue.applicant_type,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         if last_queue is not None:
             queue_no = last_queue.queue_no + 1
@@ -40,7 +39,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             applicant_type=queue.applicant_type,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         if last_queue is not None:
             queue_no = last_queue.queue_no + 1
@@ -51,7 +50,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             service=queue.service,
-            created_at__gte=get_starting_of_current_manila_timezone() 
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         if last_queue is not  None:
             queue_no = last_queue.queue_no + 1
@@ -62,7 +61,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             service_type=queue.service_type,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         if last_queue is not None:
             queue_no = last_queue.queue_no + 1
@@ -73,7 +72,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             service_type=queue.service_type,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         if last_queue is not None:
             queue_no = last_queue.queue_no + 1
@@ -84,7 +83,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             applicant_type=queue.applicant_type,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         service_initial = queue.service.name[0].upper()
         if last_queue is not None:
@@ -95,7 +94,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             category=queue.category,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         service_initial = queue.service.name[0].upper()
         if last_queue is not None:
@@ -106,7 +105,7 @@ def main_branch_numbering_and_code(queue):
         last_queue = Queue.objects.filter(
             branch=queue.branch,
             category=queue.category,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         ).last()
         if last_queue is not None:
             queue_no = last_queue.queue_no + 1
@@ -119,15 +118,15 @@ def get_queue_no_and_code(queue):
     return main_branch_numbering_and_code(queue)
    
 class Queue(models.Model):
-    branch = models.ForeignKey("Branch", on_delete=models.CASCADE)
-    category = models.ForeignKey("Category", on_delete=models.CASCADE)
-    service = models.ForeignKey("Service", on_delete=models.CASCADE)
+    branch = models.ForeignKey("Branch", on_delete=models.CASCADE)      # required
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)  # required
+    service = models.ForeignKey("Service", on_delete=models.CASCADE)    # required
     service_type = models.CharField(max_length=50, blank=True, null=True)
     window = models.ForeignKey("Window", on_delete=models.CASCADE, blank=True, null=True)
     status = models.ForeignKey("Status", default=get_default_status, on_delete=models.CASCADE)
     queue_code = models.CharField(max_length=10, blank=True, null=True)
-    applicant_name = models.CharField(max_length=50)
-    no_applicant = models.PositiveIntegerField()
+    applicant_name = models.CharField(max_length=50)                    # required
+    no_applicant = models.PositiveIntegerField()                        # required
     applicant_type = models.CharField(max_length=50, blank=True, null=True)
     is_senior_pwd = models.BooleanField(default=False)
     queue_no =  models.PositiveIntegerField(blank=True, null=True)
@@ -157,21 +156,21 @@ class Queue(models.Model):
     def get_current_queues(branch_id):
         return Queue.objects.filter(
             branch_id=branch_id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
     
     def get_current_waiting_queues(branch_id):
         return Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
     
     def get_current_now_serving_queues(branch_id):
         return Queue.objects.filter(
             branch_id=branch_id,
             status_id=Status.objects.get(name="now-serving").id,
-            created_at__gte=get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
     
 # ---------------------- RECEIVER ---------------------- #

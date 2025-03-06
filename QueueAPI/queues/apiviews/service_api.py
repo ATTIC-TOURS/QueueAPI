@@ -3,7 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from queues.models import Service, Queue, Status
 from queues.serializers import ServiceSerializer
-from queues.apiviews.utils.time import get_starting_of_current_manila_timezone
+from django.utils import timezone
 
 
 def update_service_cut_off(branch_id, service_id):
@@ -17,7 +17,7 @@ def update_service_cut_off(branch_id, service_id):
         branch_id=branch_id,
         service_id=service_id,
         status_id=complete_status_id,
-        created_at__gte=get_starting_of_current_manila_timezone()
+        created_at__date=timezone.localtime(timezone.now()).date()
     )
     # 2. Count the total pax
     complete_service_total_pax = 0
@@ -69,23 +69,3 @@ def service_detail(request, pk, format=None):
     if request.method == "GET":
         serializer = ServiceSerializer(service)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-# @api_view(["GET"])
-# def service_by_category(request, branch_id, category_id, format=None):
-#     try:
-#         services = Service.objects.filter(branch_id=branch_id, category_id=category_id)
-#     except Service.DoesNotExist:
-#         return Response(status=status.HTTP_404_NOT_FOUND)
-    
-#     if request.method == "GET":
-
-#         # --------------- IS CUT OFF (START)------------------------
-#         tourism_id = Service.objects.get(branch_id=branch_id, name="Tourism").id
-
-#         update_service_cut_off(branch_id, tourism_id)
-
-#         # --------------- IS CUT OFF (END)--------------------------
- 
-#         serializer = ServiceSerializer(services, many=True)
-     
-#         return Response(serializer.data)

@@ -17,9 +17,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
         )
         await self.accept()
         
-        
-        queues = None
         # sends these data first time connected
+        queues = None
         if self.queue_status == "waiting":
             queues = await self.get_waiting_queues() 
         elif self.queue_status == "now-serving":
@@ -73,14 +72,6 @@ class QueueConsumer(AsyncWebsocketConsumer):
             
         await self.send(text_data=json.dumps(queues))
         
-    def get_starting_of_current_manila_timezone(self):
-        yesterday_dt = timezone.now() - datetime.timedelta(days=1)
-        year = yesterday_dt.year
-        month = yesterday_dt.month
-        day = yesterday_dt.day
-        aware_dt = datetime.datetime(year, month, day, 8, tzinfo=datetime.timezone.utc)
-        return aware_dt
-        
     @database_sync_to_async
     def get_in_progress_queues(self):
         from queues.models import Queue, Status
@@ -88,7 +79,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="now-serving").id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
         queueSerializer = QueueSerializer(queues, many=True) 
         return queueSerializer.data   
@@ -101,10 +92,10 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
-        queueSerializer = QueueSerializer(queues, many=True) 
-        return queueSerializer.data
+        serializer = QueueSerializer(queues, many=True) 
+        return serializer.data
     
     @database_sync_to_async
     def get_controller_queues(self):
@@ -113,15 +104,15 @@ class QueueConsumer(AsyncWebsocketConsumer):
         waiting_queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="waiting").id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
         in_progress_queues = Queue.objects.filter(
             branch_id=self.branch_id,
             status_id=Status.objects.get(name="now-serving").id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
-        queueSerializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
-        return queueSerializer.data
+        serializer = QueueSerializer(waiting_queues.union(in_progress_queues), many=True)
+        return serializer.data
 
     @database_sync_to_async
     def get_queue_stats(self):
@@ -130,7 +121,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
         statuses = {status.name: 0 for status in statuses}
         queues = Queue.objects.filter(
             branch_id=self.branch_id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
         for queue in queues:
             queue_status = queue.status.name
@@ -150,7 +141,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
             branch_id=self.branch_id,
             service_id=service_id,
             status_id=complete_status_id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
         
         complete_tourism_total = 0
@@ -162,7 +153,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
             branch_id=self.branch_id,
             service_id=service_id,
             status_id=now_serving_status_id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
         
         now_serving_tourism_total = 0
@@ -174,7 +165,7 @@ class QueueConsumer(AsyncWebsocketConsumer):
             branch_id=self.branch_id,
             service_id=service_id,
             status_id=waiting_status_id,
-            created_at__gte=self.get_starting_of_current_manila_timezone()
+            created_at__date=timezone.localtime(timezone.now()).date()
         )
         
         waiting_tourism_total = 0
