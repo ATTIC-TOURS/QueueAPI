@@ -11,7 +11,3 @@ def window_list(request, format=None):
         windows = Window.objects.all()
         serializer = WindowSerializer(windows, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
-
-
-# test case
-# http GET http://127.0.0.1:8000/windows/
