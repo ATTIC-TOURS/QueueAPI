@@ -21,6 +21,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
         queues = None
         if self.queue_status == "now-serving":
             queues = await self.get_in_progress_queues()
+        elif self.queue_status == "waiting":
+            queues = await self.get_waiting_queues()
         elif self.queue_status == "controller":
             queues = await self.get_controller_queues()
         elif self.queue_status == "stats":
@@ -59,17 +61,32 @@ class QueueConsumer(AsyncWebsocketConsumer):
         
         if queue_status == "now-serving":
             queues = await self.get_in_progress_queues()
+        elif self.queue_status == "waiting":
+            queues = await self.get_waiting_queues()
         elif queue_status == "controller":
             queues = await self.get_controller_queues()
         elif queue_status == "stats":
             queues = await self.get_queue_stats()
         elif queue_status == "current-tourism-stat":
             queues = await self.get_tourism_stat()
-            
         await self.send(text_data=json.dumps(queues))
     
     WAITING_STATUS_ID = None
     NOW_SERVING_STATUS_ID = None
+    
+    @database_sync_to_async
+    def get_waiting_queues(self):
+        from queues.models import Queue, Status
+        from queues.serializers import QueueSerializer
+        if self.WAITING_STATUS_ID is None:
+            self.WAITING_STATUS_ID = Status.objects.get(name="waiting").id
+        queues = Queue.objects.filter(
+            branch_id=self.branch_id,
+            status_id=self.WAITING_STATUS_ID,
+            created_at__date=timezone.localtime(timezone.now()).date()
+        )
+        serializer = QueueSerializer(queues, many=True) 
+        return serializer.data   
     
     @database_sync_to_async
     def get_in_progress_queues(self):

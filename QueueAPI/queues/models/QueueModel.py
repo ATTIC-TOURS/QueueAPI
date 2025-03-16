@@ -107,6 +107,18 @@ def ws_notify_now_serving_queues(sender, instance, **kwargs):
         "queue_status": "now-serving"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
+
+@receiver([post_save, post_delete], sender=Queue)
+def ws_notify_waiting_queues(sender, instance, **kwargs):
+    branch = instance.branch
+    
+    group_name = f"waiting-queue-{branch.id}"
+    event = {
+        "type": "queues.update",
+        "branch_id": branch.id,
+        "queue_status": "waiting"
+    }
+    async_to_sync(channel_layer.group_send)(group_name, event)
     
 @receiver([post_save, post_delete], sender=Queue)
 def ws_notify_current_stats(sender, instance, **kwargs):
