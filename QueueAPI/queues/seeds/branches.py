@@ -1,10 +1,10 @@
 branches = [
     {"name": "Main Office", "password": "mainoffice"},
     {"name": "SM Mall of Asia", "password": "2022"},
-    {"name": "SM North Edsa", "password": "@atticSMNORTH143"},
-    {"name": "SM Megamall", "password": "1234"},
+    {"name": "SM North Edsa", "password": "8888"},
+    {"name": "SM Megamall", "password": "kamegamega"},
     {"name": "SM Fairview", "password": "arviepogi"},
-    {"name": "SM Southmall", "password": "1234"},
+    {"name": "SM Southmall", "password": "2024"},
     {"name": "SM Clark", "password": "1234"},
     {"name": "SM Cebu", "password": "1234"},
     {"name": "SM Davao", "password": "1234"},
