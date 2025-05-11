@@ -5,7 +5,7 @@ class AnnouncementConsumer(AsyncJsonWebsocketConsumer):
     
     async def connect(self):
         branch_id = self.scope["url_route"]["kwargs"]["branch_id"]
-        self.group_name = f"announcemet_branch_{branch_id}"
+        self.group_name = f"announcement_branch_{branch_id}"
         
         await self.channel_layer.group_add(
             self.group_name,
