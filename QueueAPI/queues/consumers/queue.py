@@ -2,7 +2,6 @@ import json
 from django.utils import timezone
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
-import datetime
 
 
 class QueueConsumer(AsyncWebsocketConsumer):
@@ -102,6 +101,8 @@ class QueueConsumer(AsyncWebsocketConsumer):
         serializer = QueueSerializer(queues, many=True) 
         return serializer.data   
     
+    
+    # problematic (efficiency)
     @database_sync_to_async
     def get_controller_queues(self):
         from queues.models import Queue, Status
@@ -152,56 +153,3 @@ class QueueConsumer(AsyncWebsocketConsumer):
             statuses[queue_status] += queue.no_applicant
         statuses["finish"] = statuses["pending"] + statuses["complete"]
         return statuses
-    
-    @database_sync_to_async
-    def get_tourism_stat(self):
-        
-        from queues.models import Queue, Status, Service
-        
-        service_id = Service.objects.get(branch_id=self.branch_id, name="Tourism").id
-        
-        complete_status_id = Status.objects.get(name="complete").id
-        queues_complete_tourism = Queue.objects.filter(
-            branch_id=self.branch_id,
-            service_id=service_id,
-            status_id=complete_status_id,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        )
-        
-        complete_tourism_total = 0
-        for queue in queues_complete_tourism:
-            complete_tourism_total += queue.no_applicant
-            
-        now_serving_status_id = Status.objects.get(name="now-serving").id
-        queues_now_serving_tourism = Queue.objects.filter(
-            branch_id=self.branch_id,
-            service_id=service_id,
-            status_id=now_serving_status_id,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        )
-        
-        now_serving_tourism_total = 0
-        for queue in queues_now_serving_tourism:
-            now_serving_tourism_total += queue.no_applicant
-            
-        waiting_status_id = Status.objects.get(name="waiting").id
-        queues_waiting_tourism = Queue.objects.filter(
-            branch_id=self.branch_id,
-            service_id=service_id,
-            status_id=waiting_status_id,
-            created_at__date=timezone.localtime(timezone.now()).date()
-        )
-        
-        waiting_tourism_total = 0
-        for queue in queues_waiting_tourism:
-            waiting_tourism_total += queue.no_applicant
-        
-        quota = Service.objects.get(branch_id=self.branch_id, name="Tourism").quota
-            
-        return {
-            "complete": complete_tourism_total,
-            "now-serving": now_serving_tourism_total,
-            "waiting": waiting_tourism_total,
-            "total": complete_tourism_total + now_serving_tourism_total + waiting_tourism_total,
-            "quota": quota
-        }

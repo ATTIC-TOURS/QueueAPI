@@ -8,16 +8,14 @@ https://docs.djangoproject.com/en/5.0/howto/deployment/asgi/
 """
 
 import os
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "QueueAPI.settings")
-
 from django.core.asgi import get_asgi_application
-
-
 from channels.auth import AuthMiddlewareStack
-from channels.routing import ProtocolTypeRouter , URLRouter
-from queues.websockets import routing
+from channels.routing import ProtocolTypeRouter, URLRouter
+from queues import routing
 
-
+os.environ.setdefault("DJANGO_SETTINGS_MODULE", "QueueAPI.settings")
+# Initialize Django ASGI application early to ensure the AppRegistry
+# is populated before importing code that may import ORM models.
 django_asgi_app = get_asgi_application()
 
 application = ProtocolTypeRouter({
