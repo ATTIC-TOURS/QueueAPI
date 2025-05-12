@@ -24,7 +24,7 @@ class MainOfficeQueueNumberTest(APITestCase):
     #         # "is_priority": True
     #     }
     
-    endpoint = "/queue-services/v1/queues"
+    endpoint = "/api/queues/v2/queues"
     data = {
         "PTAA": {
             "branch": constants.MAIN_OFFICE_ID,

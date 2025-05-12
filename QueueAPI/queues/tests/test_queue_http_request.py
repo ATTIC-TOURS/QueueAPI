@@ -29,7 +29,7 @@ class QueueHttpRequestTest(APITestCase):
     # 2. Response
     # 3. Assertion
     
-    API_URL = "/queue-services/v1"
+    API_URL = "/api/queues/v2"
     
     def setUp(self):
         queue = Queue.objects.create(

@@ -12,7 +12,7 @@ class HttpRequestTest(APITestCase):
     # 2. Response
     # 3. Assertion
     
-    API_URL = "/queue-services/v1"
+    API_URL = "/api/queues/v2"
     
     def test_branches(self):
         url = f"{self.API_URL}/branches"

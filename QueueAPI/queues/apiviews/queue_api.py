@@ -3,6 +3,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from queues.models import Queue, Status, Service, Category, Branch
 from queues.serializers import QueueSerializer
+from django.utils import timezone
 
 
 @api_view(["GET"])
@@ -63,7 +64,10 @@ def new_queue_list(request, format=None):
         try:
             branch_id = request.GET.get("branch_id", None)
             if branch_id is not None:
-                queues = Queue.objects.filter(branch_id=branch_id)
+                queues = Queue.objects.filter(
+                    branch_id=branch_id,
+                    created_at__date=timezone.localtime(timezone.now()).date()
+                )
             else:
                 queues = Queue.objects.all()
         except Queue.DoesNotExist:
@@ -78,6 +82,8 @@ def new_queue_list(request, format=None):
             return Response(mobile_queue_status(queueSerializer.data), status=status.HTTP_201_CREATED)
         return Response(queueSerializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
+
+# created_at__date=timezone.localtime(timezone.now()).date()
 
 @api_view(['GET', 'PATCH', 'DELETE'])
 def new_queue_detail(request, pk):

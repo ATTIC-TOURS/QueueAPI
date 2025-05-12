@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import path
 from channels.testing import WebsocketCommunicator
 from channels.routing import URLRouter
-from queues.websockets.consumers import QueueConsumer
+from queues.consumers import QueueConsumer
 
 
 class WebsocketConnectionsTest(TestCase):

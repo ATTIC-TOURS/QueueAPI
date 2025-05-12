@@ -28,11 +28,6 @@ urlpatterns = [
     # TV NOW SERVING
     path("tv-now-serving-queues", queue_api.tv_now_serving),
     
-    
-    # Queues
-    path("queues", queue_api.new_queue_list),
-    path("queues/<int:pk>", queue_api.new_queue_detail),
-    
     # Japan Visa Types
     path("japan-visa-types", japan_visa_api.visa_type_list),
     path("japan-visa-types/<int:pk>", japan_visa_api.visa_type_detail),
