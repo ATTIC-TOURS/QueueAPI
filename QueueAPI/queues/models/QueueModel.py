@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils import timezone
-from queues.models import Window, Status, Service, Category
+from queues.models import Status, Service, Category
 from queues.seeds import constants
 
 
@@ -33,25 +33,26 @@ def get_queue_no_and_code(queue):
     return default_numbering(queue)
    
 class Queue(models.Model):
-    branch = models.ForeignKey("Branch", on_delete=models.CASCADE)      # required
-    category = models.ForeignKey("Category", on_delete=models.CASCADE)  # required
-    service = models.ForeignKey("Service", on_delete=models.CASCADE)    # required
-    service_type = models.CharField(max_length=50, blank=True, null=True)
-    window = models.ForeignKey("Window", on_delete=models.CASCADE, blank=True, null=True)
-    status = models.ForeignKey("Status", default=get_default_status, on_delete=models.CASCADE)
-    queue_code = models.CharField(max_length=10, blank=True, null=True)
-    applicant_name = models.CharField(max_length=50)                    # required
-    no_applicant = models.PositiveIntegerField()                        # required
-    applicant_type = models.CharField(max_length=50, blank=True, null=True)
-    is_senior_pwd = models.BooleanField(default=False)
-    queue_no =  models.PositiveIntegerField(blank=True, null=True)
-    coordinator_name = models.CharField(max_length=100, blank=True, null=True)
-    created_at = models.DateTimeField(default=timezone.now)
-    updated_at = models.DateTimeField(blank=True, null=True)
-    called_at = models.DateTimeField(blank=True, null=True)
-    is_called = models.BooleanField(default=False)    
-    is_priority = models.BooleanField(default=False)    
-    applicant_photo = models.TextField(blank=True, null=True)
+    branch = models.ForeignKey("Branch", on_delete=models.CASCADE)      # required #OK
+    category = models.ForeignKey("Category", on_delete=models.CASCADE)  # required #OK
+    service = models.ForeignKey("Service", on_delete=models.CASCADE)    # required #OK
+    service_type = models.CharField(max_length=50, blank=True, null=True) #OK
+    called_by = models.CharField(max_length=50, blank=True, null=True) #OK
+    status = models.ForeignKey("Status", default=get_default_status, on_delete=models.CASCADE) #OK
+    queue_code = models.CharField(max_length=10, blank=True, null=True) #OK
+    applicant_name = models.CharField(max_length=50)                    # required #OK
+    no_applicant = models.PositiveIntegerField()                        # required #OK
+    applicant_type = models.CharField(max_length=50, blank=True, null=True) #OK
+    is_senior_pwd = models.BooleanField(default=False)                          #OK
+    queue_no =  models.PositiveIntegerField(blank=True, null=True)              #OK
+    coordinator_name = models.CharField(max_length=100, blank=True, null=True)  #OK
+    created_at = models.DateTimeField(default=timezone.now)                     #OK
+    updated_at = models.DateTimeField(blank=True, null=True)                    #OK
+    called_at = models.DateTimeField(blank=True, null=True)                     #OK
+    is_called = models.BooleanField(default=False)                              #OK
+    is_priority = models.BooleanField(default=False)                            #OK
+    applicant_photo = models.TextField(blank=True, null=True)                   #OK
+    controller_id = models.CharField(max_length=100, blank=True, null=True)         #OK
     
     def __str__(self):
         return f"{self.service} - {self.no_applicant} - {self.applicant_name} - {self.queue_code} - {self.status}"
@@ -150,15 +151,14 @@ def ws_notify_called_queue(sender, instance, **kwargs):
     applicant_name = instance.applicant_name
     queue_code = instance.queue_code
     applicant_photo = instance.applicant_photo
+    called_by = instance.called_by
     
     if instance.is_called:
-        window = Window.objects.get(id=instance.window_id)
-        
         group_name = f"call-queue-{branch.id}"
         event = {
             "type": "queue.call",
             "name": applicant_name,
-            "window_name": window.name,
+            "window_name": called_by,
             "queue_code": queue_code,
             "applicant_photo": applicant_photo
         }
@@ -166,15 +166,3 @@ def ws_notify_called_queue(sender, instance, **kwargs):
         
         instance.is_called = False
         instance.save()
-    
-# @receiver([post_save, post_delete], sender=Queue)
-# def ws_notify_current_tourism_total(sender, instance, **kwargs):
-#     branch = instance.branch
-    
-#     channel_layer = get_channel_layer()
-#     group_name = f"current-tourism-stat-queue-{branch.id}"
-#     event = {
-#         "type": "queues.update",
-#         "queue_status": "current-tourism-stat"
-#     }
-#     async_to_sync(channel_layer.group_send)(group_name, event)
