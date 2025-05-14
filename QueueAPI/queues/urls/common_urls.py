@@ -1,6 +1,6 @@
 from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
-from queues.apiviews import category_api, service_api, branch_api, status_api, queue_api, japan_visa_api, window_api, marquee_api
+from queues.apiviews import category_api, service_api, branch_api, status_api, queue_api, japan_visa_api
 
 
 urlpatterns = [
@@ -31,10 +31,4 @@ urlpatterns = [
     # Japan Visa Types
     path("japan-visa-types", japan_visa_api.visa_type_list),
     path("japan-visa-types/<int:pk>", japan_visa_api.visa_type_detail),
-    
-    # Windows
-    path("windows", window_api.window_list),
-    
-    # Marquees
-    path("marquees", marquee_api.marquee_list),
 ]
