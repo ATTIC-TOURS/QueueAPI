@@ -8,4 +8,4 @@ class Category(models.Model):
         verbose_name_plural = "categories"
     
     def __str__(self):
-        return f"{self.name} - {self.branch}"
+        return f"{self.name}"
