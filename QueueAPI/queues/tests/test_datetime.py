@@ -15,15 +15,14 @@ class DateTimeTest(TestCase):
     @classmethod
     def setUpTestData(cls):
         mainoffice = Branch.objects.get(name="Main Office")
-        jvisa = Category.objects.get(name="JAPAN VISA", branch=mainoffice)
-        tourist = Service.objects.get(name="Tourism", branch=mainoffice)
+        jvisa = Category.objects.get(name="JAPAN VISA")
+        tourist = Service.objects.get(name="Tourism")
         applicant_name = "Kenji"
         no_applicant = 3
         
         # CURRENT
         cls.cq = Queue.objects.create(
             branch=mainoffice,
-            category=jvisa,
             service=tourist,
             applicant_name=applicant_name,
             no_applicant=no_applicant
@@ -33,7 +32,6 @@ class DateTimeTest(TestCase):
         past_datetime = timezone.now() - timedelta(days=1)
         cls.pq = Queue.objects.create(
             branch=mainoffice,
-            category=jvisa,
             service=tourist,
             applicant_name=applicant_name,
             no_applicant=no_applicant,
@@ -44,7 +42,6 @@ class DateTimeTest(TestCase):
         future_datetime = timezone.now() + timedelta(days=1)
         cls.fq = Queue.objects.create(
             branch=mainoffice,
-            category=jvisa,
             service=tourist,
             applicant_name=applicant_name,
             no_applicant=no_applicant,

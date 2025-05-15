@@ -1,5 +1,5 @@
 from django.test import TestCase
-from queues.models import Queue, Branch, Category, Service, Window, Status
+from queues.models import Queue, Branch, Service
 
 
 class QueueModelTest(TestCase):
@@ -7,10 +7,8 @@ class QueueModelTest(TestCase):
     def setUpTestData(cls):
         Queue.objects.create(
             branch=Branch.objects.get(id=1),
-            category=Category.objects.get(id=1),
             service=Service.objects.get(id=1),
             service_type="Additional Documents",
-            window=Window.objects.get(id=1),
             applicant_name="kenji",
             no_applicant=3,
             applicant_type="Walk-In",

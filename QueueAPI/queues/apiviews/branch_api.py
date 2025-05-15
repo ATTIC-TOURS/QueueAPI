@@ -7,6 +7,7 @@ from queues.serializers import BranchSerializer
 
 @api_view(["GET"])
 def branch_list(request, format=None):
+    print("hello")
     if request.method == "GET":
         branches = Branch.objects.all()
         serializer = BranchSerializer(branches, many=True)

@@ -7,4 +7,11 @@ service=2
 applicant_name=kenji 
 no_applicant=3 
 
-http POST http://192.168.1.22:8000/queue-services/v1/queues branch=1 category=1 service=2 applicant_name=kenji no_applicant=3 
+[create a new queue]
+http POST http://127.0.0.1:8000/api/queues/v2/queues branch=1 service=1 applicant_name=kenji no_applicant=3
+http POST http://127.0.0.1:8000/api/queues/v2/queues branch=1 category=1 service=2 applicant_name=shiela no_applicant=10
+http POST http://127.0.0.1:8000/api/queues/v2/queues branch=1 category=1 service=3 applicant_name=doy no_applicant=6
+http POST http://127.0.0.1:8000/api/queues/v2/queues branch=1 category=1 service=4 applicant_name=jeng no_applicant=8
+
+[get queues per branch]
+http GET http://127.0.0.1:8000/api/queues/v2/queues?branch_id=1

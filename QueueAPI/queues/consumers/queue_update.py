@@ -1,11 +1,11 @@
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
 
-class AnnouncementConsumer(AsyncJsonWebsocketConsumer):
+class QueueUpdateConsumer(AsyncJsonWebsocketConsumer):
     
     async def connect(self):
         branch_id = self.scope["url_route"]["kwargs"]["branch_id"]
-        self.group_name = f"announcement_branch_{branch_id}"
+        self.group_name = f"queue_update_branch_{branch_id}"
         
         await self.channel_layer.group_add(
             self.group_name,
@@ -20,10 +20,10 @@ class AnnouncementConsumer(AsyncJsonWebsocketConsumer):
     async def receive_json(self, content):       
         # Send message to room group
         await self.channel_layer.group_send(
-            self.group_name, {"type": "announcement.message", "message": content}
+            self.group_name, {"type": "queue.update.message", "message": content}
         )
     
-    async def announcement_message(self, event):
+    async def queue_update_message(self, event):
         message = event["message"]
         
         # Send message to WebSocket

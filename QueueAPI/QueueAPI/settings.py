@@ -58,12 +58,11 @@ MIDDLEWARE = [
 
 CORS_ALLOW_CREDENTIALS = True
 
-
-CORS_ALLOWED_ORIGINS = [f"http://192.168.1.{i}:5173"
+CORS_ALLOWED_ORIGINS = [f"http://192.168.115.{i}:5173"
                         for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app"]
 
 
-CSRF_TRUSTED_ORIGINS = [f"http://192.168.1.{i}:5173"
+CSRF_TRUSTED_ORIGINS = [f"http://192.168.115.{i}:5173"
                         for i in range(256)] + ["http://localhost:5173"] + ["https://queue-web-lime.vercel.app", "https://attictoursdeveloper.pythonanywhere.com"]
 
 

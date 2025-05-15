@@ -27,39 +27,11 @@ class HttpRequestTest(APITestCase):
     
     def test_categories(self):
         url = f"{self.API_URL}/categories"
-        data = { "branch_id": constants.MAIN_OFFICE_ID }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-        
-    def test_category(self):
-        CATEGORY_ID = 1
-        url = f"{self.API_URL}/categories/{CATEGORY_ID}"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
     def test_services(self):
         url = f"{self.API_URL}/services"
-        data = { "branch_id": constants.MAIN_OFFICE_ID }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_service(self):
-        SERVICE_ID = 1
-        url = f"{self.API_URL}/services/{SERVICE_ID}"
-        response = self.client.get(url)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_services_by_category(self):
-        url = f"{self.API_URL}/services"
-        data = { 
-                "branch_id": constants.MAIN_OFFICE_ID, 
-                "category_id": constants.JAPAN_VISA_MAIN_OFFICE_ID
-        }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_windows(self):
-        url = f"{self.API_URL}/windows"
         response = self.client.get(url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
@@ -72,7 +44,6 @@ class HttpRequestTest(APITestCase):
         url = f"{self.API_URL}/queues"
         data = {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             # "service_type": "Additional Documents",
             # "status": 1,
@@ -89,27 +60,3 @@ class HttpRequestTest(APITestCase):
         }
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        
-    def test_markqueues(self):
-        url = f"{self.API_URL}/marquees"
-        data = { "branch_id": constants.MAIN_OFFICE_ID }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_current_queue_stats(self):
-        url = f"{self.API_URL}/current-queue-stats"
-        data = { "branch_id": constants.MAIN_OFFICE_ID }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_controller_queues(self):
-        url = f"{self.API_URL}/controller-queues"
-        data = { "branch_id": constants.MAIN_OFFICE_ID }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
-    def test_tv_now_serving(self):
-        url = f"{self.API_URL}/tv-now-serving-queues"
-        data = { "branch_id":constants.MAIN_OFFICE_ID }
-        response = self.client.get(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)

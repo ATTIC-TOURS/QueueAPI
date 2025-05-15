@@ -28,7 +28,6 @@ class MainOfficeQueueNumberTest(APITestCase):
     data = {
         "PTAA": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "applicant_type": "PTAA",
@@ -36,7 +35,6 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "MAN POWER": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "applicant_type": "MAN POWER",
@@ -44,7 +42,6 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "INQUIRE": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "service_type": "INQUIRE",
@@ -52,7 +49,6 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "ADDOCS": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "service_type": "ADDITIONAL DOCUMENTS",
@@ -60,7 +56,6 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "PENDING": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "service_type": "PENDING DOCUMENTS",
@@ -68,7 +63,6 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "WALK-IN": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "applicant_type": "WALK-IN",
@@ -76,7 +70,6 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "TA": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": 1,
             "service": 1,
             "applicant_name": "kenji",
             "applicant_type": "NON PTAA",
@@ -84,14 +77,12 @@ class MainOfficeQueueNumberTest(APITestCase):
         },
         "TICKET": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": constants.TICKET_MAIN_OFFICE_ID,
             "service": 8, # temp static number
             "applicant_name": "kenji",
             "no_applicant": 5
         },
         "PASSPORT": {
             "branch": constants.MAIN_OFFICE_ID,
-            "category": constants.PASSPORT_MAIN_OFFICE_ID,
             "service": 10, # temp static number
             "applicant_name": "kenji",
             "no_applicant": 5

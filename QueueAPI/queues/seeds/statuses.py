@@ -1,9 +1,9 @@
 statuses = [
     {"name": "complete"},
     {"name": "pending"},
-    {"name": "waiting"},
-    {"name": "now-serving"},
     {"name": "return"},
+    {"name": "serving"},
+    {"name": "waiting"},
 ]
 
 def create_default_statuses(apps, schema_editor):

@@ -1,7 +1,6 @@
 from django.db import models
 from django.utils import timezone
 from queues.models import Status, Service, Category
-from queues.seeds import constants
 
 
 def get_default_status():
@@ -22,11 +21,11 @@ def default_numbering(queue):
     last_queue = Queue.objects.filter(
         branch=queue.branch,
         created_at__date=timezone.localtime(timezone.now()).date(),
-        category=queue.category,
-    ).exclude(service=Service.objects.get(name="Inquire", branch=queue.branch)).last()
+        service__category=queue.service.category,
+    ).last()
     if last_queue is not None:
         queue_no = last_queue.queue_no + 1
-    category_initial = queue.category.name[0].upper()
+    category_initial = queue.service.category.name[0].upper()
     return (queue_no, f"{category_initial}{queue_no}")
     
 def get_queue_no_and_code(queue):
@@ -34,7 +33,6 @@ def get_queue_no_and_code(queue):
    
 class Queue(models.Model):
     branch = models.ForeignKey("Branch", on_delete=models.CASCADE)      # required #OK
-    category = models.ForeignKey("Category", on_delete=models.CASCADE)  # required #OK
     service = models.ForeignKey("Service", on_delete=models.CASCADE)    # required #OK
     service_type = models.CharField(max_length=50, blank=True, null=True) #OK
     called_by = models.CharField(max_length=50, blank=True, null=True) #OK
@@ -60,7 +58,6 @@ class Queue(models.Model):
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
         if self.is_called:
-            self.status = Status.objects.get(name="now-serving")
             self.called_at = timezone.now()
         if self.queue_no is None:
             self.queue_no, self.queue_code = get_queue_no_and_code(self)
@@ -95,7 +92,34 @@ from django.db.models.signals import post_save, post_delete
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
+
+
 channel_layer = get_channel_layer()
+
+@receiver([post_save], sender=Queue)
+def ws_notify_updated_queue(sender, instance, **kwargs):
+    from queues.serializers import QueueSerializer
+    branch = instance.branch
+    queueSerializer = QueueSerializer(instance)
+    group_name = f"queue_update_branch_{branch.id}"
+    event = {
+        "type": "queue.update.message", 
+        "message": queueSerializer.data
+    }
+    async_to_sync(channel_layer.group_send)(group_name, event)
+
+
+@receiver([post_delete], sender=Queue)
+def ws_notify_removed_queue(sender, instance, **kwargs):
+    from queues.serializers import QueueSerializer
+    branch = instance.branch
+    queueSerializer = QueueSerializer(instance)
+    group_name = f"queue_remove_branch_{branch.id}"
+    event = {
+        "type": "queue.remove.message", 
+        "message": queueSerializer.data
+    }
+    async_to_sync(channel_layer.group_send)(group_name, event)
 
 @receiver([post_save, post_delete], sender=Queue)
 def ws_notify_now_serving_queues(sender, instance, **kwargs):
@@ -104,8 +128,7 @@ def ws_notify_now_serving_queues(sender, instance, **kwargs):
     group_name = f"now-serving-queue-{branch.id}"
     event = {
         "type": "queues.update",
-        "branch_id": branch.id,
-        "queue_status": "now-serving"
+        "queue_status": "serving"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
 
@@ -116,7 +139,6 @@ def ws_notify_waiting_queues(sender, instance, **kwargs):
     group_name = f"waiting-queue-{branch.id}"
     event = {
         "type": "queues.update",
-        "branch_id": branch.id,
         "queue_status": "waiting"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
@@ -128,20 +150,7 @@ def ws_notify_current_stats(sender, instance, **kwargs):
     group_name = f"stats-queue-{branch.id}"
     event = {
         "type": "queues.update",
-        "branch_id": branch.id,
         "queue_status": "stats"
-    }
-    async_to_sync(channel_layer.group_send)(group_name, event)
-
-@receiver([post_save, post_delete], sender=Queue)
-def ws_notify_controller_queues(sender, instance, **kwargs):
-    branch = instance.branch
-    
-    group_name = f"controller-queue-{branch.id}"
-    event = {
-        "type": "queues.update",
-        "branch_id": branch.id,
-        "queue_status": "controller"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
 

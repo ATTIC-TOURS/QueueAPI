@@ -5,9 +5,9 @@ branches = [
     {"name": "SM Megamall", "password": "kamegamega"},
     {"name": "SM Fairview", "password": "arviepogi"},
     {"name": "SM Southmall", "password": "2024"},
-    {"name": "SM Clark", "password": "1234"},
-    {"name": "SM Cebu", "password": "1234"},
-    {"name": "SM Davao", "password": "1234"},
+    {"name": "SM Clark", "password": "clark"},
+    {"name": "SM Cebu", "password": "cebu"},
+    {"name": "SM Davao", "password": "davao"},
 ]
 
 

@@ -24,17 +24,13 @@
 
 from .branches import create_default_branches
 from .categories import create_default_categories
-from .marquees import create_default_marquees
 from .services import create_default_services
 from .statuses import create_default_statuses
-from .windows import create_default_windows
 
 
 default_data = [
     create_default_branches,
     create_default_categories,
-    create_default_marquees,
     create_default_services,
     create_default_statuses,
-    create_default_windows
 ]

@@ -3,7 +3,6 @@ from queues.models import Category
 
 
 class CategoryAdmin(admin.ModelAdmin):
-    list_display = ["name", "display_name"]
-    list_filter = ["branch"]
+    list_display = ["name"]
 
 admin.site.register(Category, CategoryAdmin)

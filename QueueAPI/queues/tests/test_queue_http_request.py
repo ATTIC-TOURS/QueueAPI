@@ -34,7 +34,6 @@ class QueueHttpRequestTest(APITestCase):
     def setUp(self):
         queue = Queue.objects.create(
             branch_id=constants.MAIN_OFFICE_ID,
-            category_id=constants.JAPAN_VISA_MAIN_OFFICE_ID,
             service_id=1,
             applicant_name="Kenji",
             no_applicant=5
