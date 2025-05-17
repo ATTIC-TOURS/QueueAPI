@@ -92,7 +92,6 @@ from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 
 
-
 channel_layer = get_channel_layer()
 
 @receiver([post_save], sender=Queue)
@@ -107,7 +106,6 @@ def ws_notify_updated_queue(sender, instance, **kwargs):
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
 
-
 @receiver([post_delete], sender=Queue)
 def ws_notify_removed_queue(sender, instance, **kwargs):
     from queues.serializers import QueueSerializer
@@ -117,28 +115,6 @@ def ws_notify_removed_queue(sender, instance, **kwargs):
     event = {
         "type": "queue.remove.message", 
         "message": queueSerializer.data
-    }
-    async_to_sync(channel_layer.group_send)(group_name, event)
-
-@receiver([post_save, post_delete], sender=Queue)
-def ws_notify_now_serving_queues(sender, instance, **kwargs):
-    branch = instance.branch
-    
-    group_name = f"now-serving-queue-{branch.id}"
-    event = {
-        "type": "queues.update",
-        "queue_status": "serving"
-    }
-    async_to_sync(channel_layer.group_send)(group_name, event)
-
-@receiver([post_save, post_delete], sender=Queue)
-def ws_notify_waiting_queues(sender, instance, **kwargs):
-    branch = instance.branch
-    
-    group_name = f"waiting-queue-{branch.id}"
-    event = {
-        "type": "queues.update",
-        "queue_status": "waiting"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
     
