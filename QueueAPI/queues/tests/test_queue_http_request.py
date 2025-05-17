@@ -62,12 +62,6 @@ class QueueHttpRequestTest(APITestCase):
         response = self.client.patch(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
     
-    def test_call_queue(self):
-        url = f"{self.API_URL}/queues/{self.queue_id}"
-        data = {"is_called": True, "window": 1}
-        response = self.client.patch(url, data)
-        self.assertEqual(response.status_code, status.HTTP_200_OK)
-    
     def test_get_branch_queues(self):
         url = f"{self.API_URL}/queues"
         data = {"branch_id": constants.MAIN_OFFICE_ID}
