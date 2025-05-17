@@ -47,7 +47,6 @@ class Queue(models.Model):
     created_at = models.DateTimeField(default=timezone.now)                     #OK
     updated_at = models.DateTimeField(blank=True, null=True)                    #OK
     called_at = models.DateTimeField(blank=True, null=True)                     #OK
-    is_called = models.BooleanField(default=False)                              #OK
     is_priority = models.BooleanField(default=False)                            #OK
     applicant_photo = models.TextField(blank=True, null=True)                   #OK
     controller_id = models.CharField(max_length=100, blank=True, null=True)         #OK
@@ -57,7 +56,7 @@ class Queue(models.Model):
     
     def save(self, *args, **kwargs):
         self.updated_at = timezone.now()
-        if self.is_called:
+        if self.controller_id:
             self.called_at = timezone.now()
         if self.queue_no is None:
             self.queue_no, self.queue_code = get_queue_no_and_code(self)
@@ -153,25 +152,3 @@ def ws_notify_current_stats(sender, instance, **kwargs):
         "queue_status": "stats"
     }
     async_to_sync(channel_layer.group_send)(group_name, event)
-
-@receiver([post_save], sender=Queue)
-def ws_notify_called_queue(sender, instance, **kwargs):
-    branch = instance.branch
-    applicant_name = instance.applicant_name
-    queue_code = instance.queue_code
-    applicant_photo = instance.applicant_photo
-    called_by = instance.called_by
-    
-    if instance.is_called:
-        group_name = f"call-queue-{branch.id}"
-        event = {
-            "type": "queue.call",
-            "name": applicant_name,
-            "window_name": called_by,
-            "queue_code": queue_code,
-            "applicant_photo": applicant_photo
-        }
-        async_to_sync(channel_layer.group_send)(group_name, event)
-        
-        instance.is_called = False
-        instance.save()

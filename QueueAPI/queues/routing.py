@@ -1,5 +1,5 @@
 from django.urls import re_path, path
-from queues.consumers import QueueConsumer, AnnouncementConsumer, QueueUpdateConsumer, QueueRemoveConsumer
+from queues.consumers import QueueConsumer, AnnouncementConsumer, QueueUpdateConsumer, QueueRemoveConsumer, QueueCallConsumer
 
 
 websocket_urlpatterns = [
@@ -7,6 +7,7 @@ websocket_urlpatterns = [
     path("api/queues/v2/ws/announcement/<int:branch_id>", AnnouncementConsumer.as_asgi()),
     path("api/queues/v2/ws/queue-update/<int:branch_id>", QueueUpdateConsumer.as_asgi()),
     path("api/queues/v2/ws/queue-remove/<int:branch_id>", QueueRemoveConsumer.as_asgi()),
+    path("api/queues/v2/ws/queue-call/<int:branch_id>", QueueCallConsumer.as_asgi()),
 ] 
 
 # requirements (controller)
